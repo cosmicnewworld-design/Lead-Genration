@@ -31,55 +31,59 @@
         @endif
 
         <div class="bg-white shadow-md rounded my-6">
-            <table class="min-w-max w-full table-auto">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                        <th class="py-3 px-6 text-left">Name</th>
-                        <th class="py-3 px-6 text-left">Designation</th>
-                        <th class="py-3 px-6 text-center">Company Name</th>
-                        <th class="py-3 px-6 text-center">Status</th>
-                        <th class="py-3 px-6 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 text-sm font-light">
-                    @foreach ($leads as $lead)
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
-                            <td class="py-3 px-6 text-left whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <span class="font-medium">{{ $lead->name }}</span>
-                                </div>
-                            </td>
-                            <td class="py-3 px-6 text-left">
-                                <div class="flex items-center">
-                                    <span>{{ $lead->designation }}</span>
-                                </div>
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                <span>{{ $lead->company_name }}</span>
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                <form action="{{ route('leads.update.status', $lead->id) }}" method="POST">
-                                    @csrf
-                                    <select name="status" class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs" onchange="this.form.submit()">
-                                        <option value="New" {{ $lead->status == 'New' ? 'selected' : '' }}>New</option>
-                                        <option value="Contacted" {{ $lead->status == 'Contacted' ? 'selected' : '' }}>Contacted</option>
-                                        <option value="Replied" {{ $lead->status == 'Replied' ? 'selected' : '' }}>Replied</option>
-                                    </select>
-                                </form>
-                            </td>
-                            <td class="py-3 px-6 text-center">
-                                <form action="{{ route('leads.destroy', $lead->id) }}" method="POST">
-                                    <a href="{{ route('leads.show', $lead->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Show</a>
-                                    <a href="{{ route('leads.edit', $lead->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
-                                </form>
-                            </td>
+            @if ($business->leads->count() > 0)
+                <table class="min-w-max w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <th class="py-3 px-6 text-left">Name</th>
+                            <th class="py-3 px-6 text-left">Designation</th>
+                            <th class="py-3 px-6 text-center">Company Name</th>
+                            <th class="py-3 px-6 text-center">Status</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                        @foreach ($business->leads as $lead)
+                            <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                <td class="py-3 px-6 text-left whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">{{ $lead->name }}</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-6 text-left">
+                                    <div class="flex items-center">
+                                        <span>{{ $lead->designation }}</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-6 text-center">
+                                    <span>{{ $lead->company_name }}</span>
+                                </td>
+                                <td class="py-3 px-6 text-center">
+                                    <form action="{{ route('leads.update.status', $lead->id) }}" method="POST">
+                                        @csrf
+                                        <select name="status" class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs" onchange="this.form.submit()">
+                                            <option value="New" {{ $lead->status == 'New' ? 'selected' : '' }}>New</option>
+                                            <option value="Contacted" {{ $lead->status == 'Contacted' ? 'selected' : '' }}>Contacted</option>
+                                            <option value="Replied" {{ $lead->status == 'Replied' ? 'selected' : '' }}>Replied</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td class="py-3 px-6 text-center">
+                                    <form action="{{ route('leads.destroy', $lead->id) }}" method="POST">
+                                        <a href="{{ route('leads.show', $lead->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Show</a>
+                                        <a href="{{ route('leads.edit', $lead->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <p class="text-gray-700 p-6">No leads found for this business.</p>
+            @endif
         </div>
     </div>
 @endsection

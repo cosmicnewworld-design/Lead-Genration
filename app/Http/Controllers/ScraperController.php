@@ -2,23 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ScraperService;
+use App\Jobs\ScrapeGooglePlacesJob;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ScraperController extends Controller
 {
-    protected $scraperService;
-
-    public function __construct(ScraperService $scraperService)
+    /**
+     * Initiate a web scraping job for a given query.
+     *
+     * This method validates the incoming request for a 'query' parameter,
+     * then dispatches a job to the queue to handle the scraping process
+     * in the background. It returns an immediate JSON response to the user.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function scrape(Request $request): JsonResponse
     {
-        $this->scraperService = $scraperService;
-    }
+        // Validate the request to ensure a query is present
+        $validated = $request->validate([
+            'query' => 'required|string|min:3|max:255',
+        ]);
 
-    public function scrape(Request $request)
-    {
-        $query = $request->input('query', 'web development companies in New York');
-        $data = $this->scraperService->searchPlaces($query);
+        // Dispatch the job to the queue for background processing
+        ScrapeGooglePlacesJob::dispatch($validated['query']);
 
-        return response()->json($data);
+        // Return an immediate response to the user
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Scraping job has been queued successfully. The results will be processed in the background.'
+        ], 202); // 202 Accepted is a great status code for this
     }
 }

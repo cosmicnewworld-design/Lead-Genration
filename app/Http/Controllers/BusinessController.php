@@ -52,8 +52,11 @@ class BusinessController extends Controller
      */
     public function show(Business $business)
     {
-        $leads = $business->leads()->orderBy('created_at', 'desc')->get();
-        return view('businesses.show', compact('business', 'leads'));
+        $business->load(['leads' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+    
+        return view('businesses.show', compact('business'));
     }
 
     /**
