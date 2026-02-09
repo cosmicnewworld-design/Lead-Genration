@@ -2,6 +2,14 @@
 
 This is a comprehensive lead generation and management application built with the Laravel framework. It provides a robust system for capturing, tracking, and managing leads, designed for efficiency and scalability.
 
+## 📸 Screenshots
+
+*(Add your screenshots here. You can capture images of the login page, dashboard, and lead management interface.)*
+
+| Dashboard | Leads Page |
+| :---: | :---: |
+| *![Dashboard Screenshot](path/to/your/screenshot.png)* | *![Leads Page Screenshot](path/to/your/screenshot.png)* |
+
 ## ✨ Implemented Features
 
 -   **Lead Management:** Full CRUD (Create, Read, Update, Delete) functionality for leads.
@@ -56,7 +64,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-*Note: You may need to configure your `.env` file with database credentials and any third-party API keys.*
+***Note:*** *You may need to configure your `.env` file with database credentials and any third-party API keys.*
 
 ## 🗄️ Database Migration
 
@@ -68,12 +76,12 @@ This project uses SQLite by default. If you are using it, create the database fi
 touch database/database.sqlite
 ```
 
-#### 2. Run Migrations
+#### 2. Run Migrations & Seeders
 
-Run the database migrations to create the necessary tables:
+Run the database migrations to create the tables and seed them with default data, including the admin user:
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
 ## 🏃‍♀️ How to Run Locally
@@ -93,3 +101,12 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:8000`.
+
+## 🔑 Admin Access
+
+A default administrator account is created when the database is seeded.
+
+-   **Email:** `admin@example.com`
+-   **Password:** `password`
+
+Log in with these credentials to access the admin dashboard and manage all users and leads.
