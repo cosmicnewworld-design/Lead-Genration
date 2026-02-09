@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->integer('follow_up_count')->default(0);
-            $table->timestamp('last_follow_up_sent_at')->nullable();
+            $table->foreignId('business_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->dropColumn('follow_up_count');
-            $table->dropColumn('last_follow_up_sent_at');
+            $table->dropForeign(['business_id']);
+            $table->dropColumn('business_id');
         });
     }
 };

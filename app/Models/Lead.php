@@ -13,23 +13,13 @@ class Lead extends Model
         'name',
         'designation',
         'company_name',
-        'scraped_data',
+        'email',
+        'phone',
         'status',
-        'business_id',
-        'follow_up_count',
-        'last_follow_up_sent_at',
-        'linkedin_profile',
-        'email_verified_at',
+        'scraped_data',
     ];
 
     protected $casts = [
         'scraped_data' => 'array',
-        'last_follow_up_sent_at' => 'datetime',
-        'email_verified_at' => 'datetime',
     ];
-
-    public function business()
-    {
-        return $this->belongsTo(Business::class);
-    }
 }

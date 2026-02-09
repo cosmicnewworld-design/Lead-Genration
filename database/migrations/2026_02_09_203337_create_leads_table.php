@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('designation')->nullable();
-            $table->string('company_name');
-            $table->enum('status', ['New', 'Contacted', 'Replied'])->default('New');
-            $table->json('scraped_data');
+            $table->string('email')->unique();
+            $table->string('phone_number')->nullable();
+            $table->string('linkedin_url')->nullable();
+            $table->json('socials')->nullable();
+            $table->string('status')->default('new')->index();
+            $table->foreignId('business_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

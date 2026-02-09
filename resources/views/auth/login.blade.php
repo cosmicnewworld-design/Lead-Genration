@@ -1,12 +1,4 @@
-@extends('layouts.guest')
-
-@section('content')
-<div class="max-w-md w-full bg-gray-800 p-8 rounded-lg shadow-lg">
-    <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-white">Welcome Back</h2>
-        <p class="text-gray-400">Sign in to continue to your dashboard</p>
-    </div>
-
+<x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -14,50 +6,42 @@
         @csrf
 
         <!-- Email Address -->
-        <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-            <input id="email" class="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+        <div>
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
-        <div class="mb-6">
-             <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-            <input id="password" class="mt-1 block w-full bg-gray-700 border-gray-600 rounded-md shadow-sm text-white focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        <div class="mt-4">
+            <x-input-label for="password" :value="__('Password')" />
+
+            <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
                             name="password"
                             required autocomplete="current-password" />
+
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-600 bg-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <label for="remember_me" class="ml-2 block text-sm text-gray-400">Remember me</label>
-            </div>
+        <!-- Remember Me -->
+        <div class="block mt-4">
+            <label for="remember_me" class="inline-flex items-center">
+                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
+            </label>
+        </div>
 
+        <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="text-sm text-indigo-400 hover:text-indigo-600" href="{{ route('password.request') }}">
-                    Forgot your password?
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
+                    {{ __('Forgot your password?') }}
                 </a>
             @endif
-        </div>
 
-        <!-- Login Button -->
-        <div>
-            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Log in
-            </button>
+            <x-primary-button class="ms-3">
+                {{ __('Log in') }}
+            </x-primary-button>
         </div>
-
-        <!-- Sign Up Link -->
-        <p class="text-center text-sm text-gray-400 mt-6">
-            Don't have an account? 
-            <a href="{{ route('register') }}" class="font-medium text-indigo-400 hover:text-indigo-600">
-                Sign up
-            </a>
-        </p>
     </form>
-</div>
-@endsection
+</x-guest-layout>

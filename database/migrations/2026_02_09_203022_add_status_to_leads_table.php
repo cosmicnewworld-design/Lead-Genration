@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->string('phone_number')->nullable();
-            $table->string('whatsapp_status')->nullable();
+            $table->string('status')->default('new')->index();
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->dropColumn('phone_number');
-            $table->dropColumn('whatsapp_status');
+            $table->dropColumn('status');
         });
     }
 };

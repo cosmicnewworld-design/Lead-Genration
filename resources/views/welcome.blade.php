@@ -3,40 +3,41 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Lead Management</title>
+
+        <title>Laravel Lead Generation</title>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+
         <!-- Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-sans bg-gray-900 text-white">
-        <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-red-500 selection:text-white">
+    <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
+        <div class="relative min-h-screen flex flex-col items-center justify-center">
             <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                 <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                    <div class="flex lg:justify-center lg:col-start-2">
-                       <h1 class="text-4xl font-bold">Lead Management</h1>
-                    </div>
                     @if (Route::has('login'))
-                        <nav class="flex flex-1 justify-end">
+                        <nav class="-mx-3 flex flex-1 justify-end">
                             @auth
                                 <a
                                     href="{{ url('/dashboard') }}"
-                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
                                     Dashboard
                                 </a>
                             @else
                                 <a
                                     href="{{ route('login') }}"
-                                    class="rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                    class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                 >
                                     Log in
                                 </a>
+
                                 @if (Route::has('register'))
                                     <a
                                         href="{{ route('register') }}"
-                                        class="ml-4 rounded-md px-3 py-2 text-white ring-1 ring-transparent transition hover:text-white/70 focus:outline-none focus-visible:ring-[#FF2D20]"
+                                        class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
                                         Register
                                     </a>
@@ -47,36 +48,90 @@
                 </header>
 
                 <main class="mt-6">
-                    <div class='text-center'>
-                        <h2 class='text-5xl font-bold'>Welcome to the Future of Lead Management</h2>
-                        <p class='mt-4 text-lg text-gray-400'>A streamlined solution to help you find, track, and convert leads into customers.</p>
-                         <div class="mt-8">
-                            <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 text-lg">Get Started</a>
-                        </div>
-                    </div>
+                    <div class="grid gap-6 lg:grid-cols-1 lg:gap-8">
+                        <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-gray-800 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]">
+                            <div class="pt-3 sm:pt-5">
+                                <h2 class="text-xl font-semibold text-black dark:text-white">Lead Capture Form</h2>
 
-                    <div class="grid gap-6 lg:grid-cols-3 lg:gap-8 mt-16">
-                        <div class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-gray-800 p-6 shadow-lg">
-                            <h3 class="text-2xl font-bold">Powerful Scraping</h3>
-                            <p class="text-gray-400">Effortlessly gather lead information from various online sources.</p>
-                        </div>
-
-                        <div class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-gray-800 p-6 shadow-lg">
-                            <h3 class="text-2xl font-bold">Automated Outreach</h3>
-                            <p class="text-gray-400">Engage with your leads through automated and personalized email campaigns.</p>
-                        </div>
-
-                        <div class="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-gray-800 p-6 shadow-lg">
-                           <h3 class="text-2xl font-bold">Advanced Analytics</h3>
-                            <p class="text-gray-400">Track your progress and make data-driven decisions with our intuitive dashboard.</p>
+                                <form id="lead-form" class="mt-4 space-y-4">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                                        <input type="text" id="name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                        <p id="name-error" class="text-red-500 text-xs mt-1"></p>
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                        <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
+                                        <p id="email-error" class="text-red-500 text-xs mt-1"></p>
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                        <input type="tel" id="phone" name="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <p id="phone-error" class="text-red-500 text-xs mt-1"></p>
+                                    </div>
+                                    <div>
+                                        <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+                                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required></textarea>
+                                        <p id="message-error" class="text-red-500 text-xs mt-1"></p>
+                                    </div>
+                                    <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Submit</button>
+                                </form>
+								<p id="success-message" class="text-green-500 text-sm mt-4"></p>
+                            </div>
                         </div>
                     </div>
                 </main>
-
-                <footer class="py-16 text-center text-sm text-gray-400">
-                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
-                </footer>
             </div>
         </div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const form = document.getElementById('lead-form');
+				const successMessage = document.getElementById('success-message');
+
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
+
+					// Reset errors
+					document.getElementById('name-error').textContent = '';
+					document.getElementById('email-error').textContent = '';
+					document.getElementById('phone-error').textContent = '';
+					document.getElementById('message-error').textContent = '';
+					successMessage.textContent = '';
+
+					const formData = new FormData(form);
+
+					fetch('/api/leads', {
+						method: 'POST',
+						headers: {
+							'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+							'Accept': 'application/json',
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(Object.fromEntries(formData))
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.errors) {
+							if (data.errors.name) {
+									document.getElementById('name-error').textContent = data.errors.name[0];
+								}
+								if (data.errors.email) {
+									document.getElementById('email-error').textContent = data.errors.email[0];
+								}
+								if (data.errors.phone) {
+									document.getElementById('phone-error').textContent = data.errors.phone[0];
+								}
+								if (data.errors.message) {
+									document.getElementById('message-error').textContent = data.errors.message[0];
+								}
+						} else {
+							successMessage.textContent = data.message;
+							form.reset();
+						}
+					})
+					.catch(error => console.error('Error:', error));
+				});
+			});
+		</script>
     </body>
 </html>

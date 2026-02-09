@@ -18,6 +18,7 @@ return [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
     ],
 
     'postmark' => [
@@ -30,12 +31,16 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'hunter' => [
-        'key' => env('HUNTER_API_KEY'),
+    'serpapi' => [
+        'key' => env('SERPAPI_KEY'),
     ],
 
     'proxycurl' => [
-        'key' => env('PROXYCURL_API_KEY'),
+        'key' => env('PROXYCURL_KEY'),
+    ],
+
+    'hunter' => [
+        'key' => env('HUNTER_KEY'),
     ],
 
 ];
