@@ -6,12 +6,9 @@
 /vendor
 .env
 .env.backup
-.flare
+.env.production
 .phpunit.result.cache
-homestead.bat
-homestead.ps1
-homestead.sh
-Homestead.yaml
 Homestead.json
+Homestead.yaml
 npm-debug.log
 yarn-error.log

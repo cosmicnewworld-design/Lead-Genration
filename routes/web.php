@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ScraperController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,13 +19,23 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
-    Route::delete('/leads/{lead}', [LeadController::class, 'destroy'])->name('leads.destroy');
+    // Replaced individual lead routes with a resourceful route
+    Route::resource('leads', LeadController::class);
 
     Route::get('/scraper', function () {
         return view('scraper');
     })->name('scraper');
     Route::post('/scrape', [ScraperController::class, 'scrape'])->name('scrape.post');
+});
+
+// Admin Routes
+Route::get('admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('admin/login', [AdminController::class, 'doLogin']);
+Route::post('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::delete('/leads/{lead}', [AdminController::class, 'destroy'])->name('leads.destroy');
 });
 
 require __DIR__.'/auth.php';

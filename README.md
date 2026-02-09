@@ -1,69 +1,86 @@
-# Lead Generation and Outreach Automation Tool
+# Laravel Lead Generation & Management
 
-## Overview
+This is a comprehensive lead generation and management application built with the Laravel framework. It provides a robust system for capturing, enriching, and managing leads, designed for efficiency and scalability.
 
-This tool is designed to help users scrape leads from Google Maps, enrich them with contact information, and automate outreach via email and WhatsApp.
+## ✨ Features
 
-## Setup
+*   **Lead Management:** Full CRUD functionality for leads.
+*   **Data Enrichment:** Automatically enrich lead data using third-party APIs (email, LinkedIn, social profiles).
+*   **Outreach Automation:** Automate outreach campaigns via email and WhatsApp.
+*   **Status Tracking:** Track the status of each lead (New, Contacted, Replied, Junk).
+*   **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all leads.
+*   **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
+*   **Secure Authentication:** Secure user authentication and authorization system.
 
-1. Clone the repository.
-2. Run `composer install`.
-3. Run `npm install`.
-4. Copy `.env.example` to `.env`.
-5. Run `php artisan key:generate`.
-6. Run `php artisan migrate`.
-7. Run `npm run dev` and `php artisan serve` in separate terminals.
+## 🚀 Tech Stack
 
-## Implemented Features
+*   **Backend:** PHP 8.1, Laravel 10
+*   **Frontend:** Blade, Tailwind CSS, Alpine.js
+*   **Database:** SQLite (default), MySQL, or PostgreSQL
+*   **Development Environment:** Firebase Studio (formerly Project IDX)
 
-### Lead Scraping
-- Scrape Google Maps for business information based on keywords.
-- Store scraped leads in a local database.
-- A simple UI to initiate the scraping process.
+## 📦 Installation
 
-### Lead Enrichment
-- Automatically enrich leads with additional information in the background.
-- Find and store LinkedIn profiles, email addresses, and other social media links.
-- Display enriched data, including social media profiles, in the leads table.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repository.git
+    cd your-repository
+    ```
 
-## Features
+2.  **Install dependencies:**
+    ```bash
+    composer install
+    npm install
+    ```
 
-### Data Enrichment
-- Enrich leads with email addresses, LinkedIn profiles, and social media links (Facebook, Twitter, Instagram, etc.).
+## ⚙️ Environment Setup
 
-### Outreach Automation
-- Send templated emails to leads.
-- Send WhatsApp messages to leads.
+1.  **Create an environment file:**
+    ```bash
+    cp .env.example .env
+    ```
 
-### Lead Management
-- A central dashboard to view and manage all leads.
-- Filter and sort leads based on their status.
-- Track the status of each lead (New, Contacted, Replied, etc.).
+2.  **Generate an application key:**
+    ```bash
+    php artisan key:generate
+    ```
 
-## Project Structure
+3.  **Configure your database:**
+    Update the `DB_*` variables in your `.env` file with your database credentials.
 
-- **Backend:** Laravel
-- **Frontend:** Blade with Tailwind CSS
-- **Database:** SQLite
+## 🗄️ Database Migration
 
-## Current Plan: Outreach Automation (Email)
+Run the following command to create the necessary tables in your database:
 
-1.  **Database Migration:** Add a `status` column to the `leads` table to track outreach status (e.g., 'new', 'contacted', 'replied').
-2.  **Email Mailable:** Create a mailable class to define the email structure and content.
-3.  **Email Sending Job:** Create a queued job to send emails in the background.
-4.  **Email Composer UI:**
-    - Create a new route and controller method for the email composer page.
-    - Build a view with a form to write an email subject and body.
-    - Include a list of leads with checkboxes to select recipients.
-5.  **Controller Logic:** Implement the controller logic to dispatch the email sending job for the selected leads.
-6.  **Update Lead Status:** Update the status of the leads to 'contacted' after the email job is dispatched.
-7.  **UI Updates:** Display the lead status in the main leads table.
+```bash
+php artisan migrate
+```
 
-## Completed Plan
+## ▶️ Run the Application
 
-1.  **Models and Migrations:** Define the database schema for leads and businesses. (Done)
-2.  **UI/UX:** Design and build the user interface for lead scraping, management, and outreach. (Partially Done)
-3.  **Backend Logic:** Implement the functionality for scraping, enrichment, and outreach. (Partially Done)
-    - Lead enrichment job created and running. (Done)
-    - Social media links are being scraped and stored. (Done)
-    - UI updated to display social media icons. (Done)
+To run the application, you need to start the Vite development server and the Laravel development server in two separate terminals.
+
+**Terminal 1: Start Vite**
+```bash
+npm run dev
+```
+
+**Terminal 2: Start Laravel**
+```bash
+php artisan serve
+```
+
+## 📁 Folder Structure
+
+Here is an overview of the key directories in a Laravel project:
+
+*   `app/`: Contains the core code of your application, including Models, Controllers, and Service Providers.
+*   `bootstrap/`: Contains the files that bootstrap the framework.
+*   `config/`: Contains all of your application's configuration files.
+*   `database/`: Contains your database migrations, seeders, and factories.
+*   `public/`: The web server's document root. Contains the `index.php` file, which is the entry point for all requests.
+*   `resources/`: Contains your views (Blade templates), raw assets (CSS, JavaScript), and language files.
+*   `routes/`: Contains all of the route definitions for your application.
+*   `storage/`: Contains your logs, compiled Blade templates, file-based sessions, and other files generated by the framework.
+*   `tests/`: Contains your automated tests.
+*   `vendor/`: Contains your Composer dependencies.

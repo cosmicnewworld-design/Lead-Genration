@@ -17,9 +17,16 @@ class Lead extends Model
         'phone',
         'status',
         'scraped_data',
+        'business_id',
+        'linkedin_profile',
     ];
 
     protected $casts = [
         'scraped_data' => 'array',
     ];
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
 }

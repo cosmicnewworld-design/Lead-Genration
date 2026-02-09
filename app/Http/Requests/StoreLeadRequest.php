@@ -26,13 +26,15 @@ class StoreLeadRequest extends FormRequest
      */
     public function rules(): array
     {
+        $leadId = $this->route('lead') ? $this->route('lead')->id : null;
+
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:leads,email',
-            'title' => 'nullable|string|max:255',
-            'company_name' => 'nullable|string|max:255',
-            'website' => 'nullable|url|max:255',
+            'email' => 'required|email|max:255|unique:leads,email,' . $leadId,
             'phone' => 'nullable|string|max:50',
+            'designation' => 'nullable|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'linkedin_profile' => 'nullable|url|max:255',
             'status' => 'sometimes|string|in:New,Contacted,Replied,Junk',
             'business_id' => 'required|exists:businesses,id',
         ];
