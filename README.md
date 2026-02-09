@@ -4,83 +4,76 @@ This is a comprehensive lead generation and management application built with th
 
 ## ✨ Features
 
-*   **Lead Management:** Full CRUD functionality for leads.
-*   **Data Enrichment:** Automatically enrich lead data using third-party APIs (email, LinkedIn, social profiles).
-*   **Outreach Automation:** Automate outreach campaigns via email and WhatsApp.
-*   **Status Tracking:** Track the status of each lead (New, Contacted, Replied, Junk).
-*   **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all leads.
-*   **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
-*   **Secure Authentication:** Secure user authentication and authorization system.
+- **Lead Management:** Full CRUD functionality for creating, reading, updating, and deleting leads.
+- **Data Enrichment:** Automatically enrich lead data using third-party APIs (email, LinkedIn, social profiles).
+- **Outreach Automation:** Automate outreach campaigns via email and WhatsApp.
+- **Status Tracking:** Track the status of each lead with clear, color-coded labels (e.g., New, Contacted, Replied, Junk).
+- **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all users and leads.
+- **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
+- **Secure Authentication:** A complete authentication system with middleware-protected routes for both users and administrators.
 
 ## 🚀 Tech Stack
 
-*   **Backend:** PHP 8.1, Laravel 10
-*   **Frontend:** Blade, Tailwind CSS, Alpine.js
-*   **Database:** SQLite (default), MySQL, or PostgreSQL
-*   **Development Environment:** Firebase Studio (formerly Project IDX)
+- **Backend:** [Laravel](https://laravel.com/) (^12.0), [PHP](https://www.php.net/) (^8.2)
+- **Frontend:** [Tailwind CSS](https://tailwindcss.com/), [Blade](https://laravel.com/docs/12.x/blade), [Vite](https://vitejs.dev/)
+- **Database:** [SQLite](https://www.sqlite.org/index.html) (default), [MySQL](https://www.mysql.com/), or [PostgreSQL](https://www.postgresql.org/)
+- **Development Environment:** [Node.js](https://nodejs.org/) 20
 
-## 📦 Installation
+## ⚙️ Installation
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/your-repository.git
-    cd your-repository
-    ```
+Follow these steps to set up the project locally.
 
-2.  **Install dependencies:**
-    ```bash
-    composer install
-    npm install
-    ```
+**1. Clone the Repository**
+```bash
+git clone https://github.com/cosmicnewworld-design/Lead-Genration.git
+cd Lead-Genration
+```
 
-## ⚙️ Environment Setup
+**2. Install Dependencies**
 
-1.  **Create an environment file:**
-    ```bash
-    cp .env.example .env
-    ```
+Install PHP and JavaScript dependencies:
+```bash
+composer install
+npm install
+```
 
-2.  **Generate an application key:**
-    ```bash
-    php artisan key:generate
-    ```
+**3. Set Up Environment**
 
-3.  **Configure your database:**
-    Update the `DB_*` variables in your `.env` file with your database credentials.
+Create a copy of the example environment file and generate your unique application key:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## 🗄️ Database Migration
+##  migrating the database
 
-Run the following command to create the necessary tables in your database:
+**1. Create the Database File**
 
+This project uses SQLite by default. Create the database file:
+```bash
+touch database/database.sqlite
+```
+
+**2. Run Migrations**
+
+Run the database migrations to create the necessary tables:
 ```bash
 php artisan migrate
 ```
 
-## ▶️ Run the Application
+## 🏃‍♀️ How to Run Locally
 
-To run the application, you need to start the Vite development server and the Laravel development server in two separate terminals.
+To run the application, you need to start both the PHP server and the Vite development server in separate terminals.
 
-**Terminal 1: Start Vite**
-```bash
-npm run dev
-```
-
-**Terminal 2: Start Laravel**
+**1. Start the Laravel Server**
 ```bash
 php artisan serve
 ```
 
-## 📁 Folder Structure
+**2. Start the Vite Server**
+```bash
+npm run dev
+```
 
-Here is an overview of the key directories in a Laravel project:
+The application will be available at `http://localhost:8000`.
 
-*   `app/`: Contains the core code of your application, including Models, Controllers, and Service Providers.
-*   `bootstrap/`: Contains the files that bootstrap the framework.
-*   `config/`: Contains all of your application's configuration files.
-*   `database/`: Contains your database migrations, seeders, and factories.
-*   `public/`: The web server's document root. Contains the `index.php` file, which is the entry point for all requests.
-*   `resources/`: Contains your views (Blade templates), raw assets (CSS, JavaScript), and language files.
-*   `routes/`: Contains all of the route definitions for your application.
-*   `storage/`: Contains your logs, compiled Blade templates, file-based sessions, and other files generated by the framework.
-*   `tests/`: Contains your automated tests.
-*   `vendor/`: Contains your Composer dependencies.
