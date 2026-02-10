@@ -7,11 +7,21 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return view('welcome', [
         'tenants' => Tenant::with('users')->get(),
     ]);
+});
+
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+        return 'Database connection is successful!';
+    } catch (\Exception $e) {
+        return 'Database connection failed: ' . $e->getMessage();
+    }
 });
 
 Route::get('/dashboard', function () {
