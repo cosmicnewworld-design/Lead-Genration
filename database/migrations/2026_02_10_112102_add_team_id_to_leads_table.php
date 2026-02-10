@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->renameColumn('phone_number', 'phone');
-            $table->renameColumn('linkedin_url', 'linkedin_profile');
-            $table->string('designation')->nullable()->after('name');
-            $table->string('company_name')->nullable()->after('designation');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
         });
     }
 
@@ -25,9 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->renameColumn('phone', 'phone_number');
-            $table->renameColumn('linkedin_profile', 'linkedin_url');
-            $table->dropColumn(['designation', 'company_name']);
+            $table->dropForeign(['team_id']);
+            $table->dropColumn('team_id');
         });
     }
 };

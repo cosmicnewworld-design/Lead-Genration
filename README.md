@@ -1,14 +1,6 @@
-# Laravel Lead Generation & Management
+# Lead Generation SaaS
 
-This is a comprehensive lead generation and management application built with the Laravel framework. It provides a robust system for capturing, tracking, and managing leads, designed for efficiency and scalability.
-
-## 📸 Screenshots
-
-*(Add your screenshots here. You can capture images of the login page, dashboard, and lead management interface.)*
-
-| Dashboard | Leads Page |
-| :---: | :---: |
-| *![Dashboard Screenshot](path/to/your/screenshot.png)* | *![Leads Page Screenshot](path/to/your/screenshot.png)* |
+This project is a powerful, full-stack lead generation and outreach automation platform built with the Laravel framework. It is designed to help businesses, sales teams, and marketing professionals streamline their lead management, automate outreach, and accelerate growth.
 
 ## ✨ Implemented Features
 
@@ -20,13 +12,53 @@ This is a comprehensive lead generation and management application built with th
 -   **Email Outreach:** A foundational system for sending outreach emails is in place.
 -   **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
 
-## 📅 Planned Features
+## 📅 Roadmap to Advanced SaaS
 
-The following features are planned for future development:
+The following is a strategic roadmap to upgrade this platform into an advanced, multi-tenant SaaS application similar to industry leaders like Apollo, Instantly, or HubSpot.
 
--   **Full Outreach Automation:** A complete system for automating multi-step outreach campaigns.
--   **WhatsApp Integration:** Add WhatsApp as a channel for lead outreach.
--   **Advanced Reporting:** A dashboard with detailed analytics on lead conversion and campaign performance.
+### **Phase 1: Foundational SaaS Architecture (Multi-Tenancy)**
+
+-   **Goal:** Re-architect the application to securely serve multiple customers (tenants) from a single codebase.
+-   **Tasks:**
+    -   Implement a multi-tenant database schema using a `team_id` or `workspace_id` foreign key on all tenant-specific data (leads, campaigns, etc.).
+    -   Create automatic tenant identification middleware based on the logged-in user.
+    -   Refactor all queries and logic to be tenant-aware, ensuring data isolation.
+    -   Implement team/workspace management (create workspace, invite members).
+
+### **Phase 2: User Roles, Permissions & Subscription Management**
+
+-   **Goal:** Introduce role-based access control (RBAC) and a complete subscription and billing system.
+-   **Tasks:**
+    -   Integrate `spatie/laravel-permission` to manage roles (e.g., Owner, Admin, Member) and permissions within each tenant workspace.
+    -   Design and implement subscription plans (`plans`, `subscriptions`, `plan_features` tables).
+    -   Integrate Laravel Cashier with Stripe for subscription billing and lifecycle management.
+    -   Implement middleware to restrict feature access based on the tenant's subscription plan and usage limits.
+
+### **Phase 3: Advanced Lead & Campaign Automation**
+
+-   **Goal:** Build a powerful, multi-step drip campaign engine.
+-   **Tasks:**
+    -   Create database tables for `campaigns`, `sequences` (steps), and `sequence_emails`.
+    -   Develop a `CampaignManager` service to add leads to campaigns and schedule the first email.
+    -   Build a scheduled job (`SendCampaignEmailJob`) that processes the sequence steps, applies delays, and sends emails.
+    -   Implement conditions (e.g., "stop if replied") to make sequences intelligent.
+
+### **Phase 4: Analytics, Lead Scoring & Segmentation**
+
+-   **Goal:** Provide actionable insights and intelligence.
+-   **Tasks:**
+    -   Implement email open and link click tracking using tracking pixels and redirect URLs.
+    -   Create an analytics dashboard to display campaign metrics (open rate, reply rate, etc.).
+    -   Develop a lead scoring system based on actions (e.g., `+10` for reply, `+1` for open).
+    -   Implement lead segmentation based on properties and scores (e.g., "Hot Leads," "Engaged in USA").
+
+### **Phase 5: CRM Pipeline & Multi-Channel Outreach**
+
+-   **Goal:** Add CRM functionality and expand outreach beyond email.
+-   **Tasks:**
+    -   Build a visual, Kanban-style deal pipeline (`pipelines`, `pipeline_stages` tables).
+    -   Integrate WhatsApp Business API for automated WhatsApp messaging.
+    -   (Carefully) explore LinkedIn outreach automation, respecting their terms of service.
 
 ## 🚀 Tech Stack
 
@@ -48,8 +80,6 @@ cd Lead-Genration
 
 #### 2. Install Dependencies
 
-Install PHP and JavaScript dependencies:
-
 ```bash
 composer install
 npm install
@@ -57,56 +87,29 @@ npm install
 
 #### 3. Set Up Environment
 
-Create a copy of the example environment file and generate your unique application key:
+Copy the `.env.example` file to `.env` and configure your database and other services.
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-***Note:*** *You may need to configure your `.env` file with database credentials and any third-party API keys.*
-
-## 🗄️ Database Migration
-
-#### 1. Create the Database File
-
-This project uses SQLite by default. If you are using it, create the database file:
+#### 4. Run Database Migrations
 
 ```bash
-touch database/database.sqlite
+php artisan migrate
 ```
 
-#### 2. Run Migrations & Seeders
-
-Run the database migrations to create the tables and seed them with default data, including the admin user:
+#### 5. Run the Development Servers
 
 ```bash
-php artisan migrate --seed
-```
-
-## 🏃‍♀️ How to Run Locally
-
-To run the application, you need to start both the PHP server and the Vite development server in separate terminals.
-
-#### 1. Start the Laravel Server
-
-```bash
+# In one terminal, run the PHP server:
 php artisan serve
-```
 
-#### 2. Start the Vite Server
-
-```bash
+# In another terminal, run the Vite asset bundler:
 npm run dev
 ```
 
-The application will be available at `http://localhost:8000`.
+---
+*This README is a living document that will be updated as the project evolves.*
 
-## 🔑 Admin Access
-
-A default administrator account is created when the database is seeded.
-
--   **Email:** `admin@example.com`
--   **Password:** `password`
-
-Log in with these credentials to access the admin dashboard and manage all users and leads.

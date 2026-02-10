@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->string('status')->default('new')->index();
+        Schema::create('teams', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('owner_id')->constrained('users');
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('teams');
     }
 };

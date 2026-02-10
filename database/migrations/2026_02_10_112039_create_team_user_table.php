@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->json('socials')->nullable();
+        Schema::create('team_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('leads', function (Blueprint $table) {
-            $table->dropColumn('socials');
-        });
+        Schema::dropIfExists('team_user');
     }
 };
