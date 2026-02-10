@@ -6,11 +6,11 @@ use App\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Lead extends Model
+class Campaign extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'tenant_id', 'campaign_id'];
+    protected $fillable = ['name', 'description', 'tenant_id'];
 
     protected static function booted()
     {
@@ -22,8 +22,8 @@ class Lead extends Model
         return $this->belongsTo(Tenant::class);
     }
 
-    public function campaign()
+    public function leads()
     {
-        return $this->belongsTo(Campaign::class);
+        return $this->hasMany(Lead::class);
     }
 }

@@ -3,79 +3,66 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
-use App\Models\Business;
-use App\Http\Requests\StoreLeadRequest;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class LeadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-        $leads = Lead::with('business')->when($search, function ($query, $search) {
-            return $query->where('name', 'like', "%{$search}%")
-                         ->orWhere('email', 'like', "%{$search}%");
-        })->latest()->paginate(10);
-
-        return view('leads.index', compact('leads', 'search'));
+        $leads = Lead::with('campaign')->latest()->paginate(10);
+        return view('leads.index', compact('leads'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $businesses = Business::where('tenant_id', config('tenant.id'))->get();
-        return view('leads.create', compact('businesses'));
+        $this->authorize('create', Lead::class);
+        $campaigns = Campaign::all();
+        return view('leads.create', compact('campaigns'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreLeadRequest $request)
+    public function store(Request $request)
     {
-        $lead = new Lead($request->validated());
-        $lead->tenant_id = config('tenant.id');
-        $lead->save();
-
-        return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
+        $this->authorize('create', Lead::class);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('leads')->where(function ($query) {
+                return $query->where('tenant_id', auth()->user()->tenant_id);
+            })],
+            'phone' => 'nullable|string',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+        ]);
+        auth()->user()->tenant->leads()->create($validated);
+        return redirect()->route('leads.index')->with('success', 'Lead created.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Lead $lead)
-    {
-        return view('leads.show', compact('lead'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Lead $lead)
     {
-        $businesses = Business::where('tenant_id', config('tenant.id'))->get();
-        return view('leads.edit', compact('lead', 'businesses'));
+        $this->authorize('update', $lead);
+        $campaigns = Campaign::all();
+        return view('leads.edit', compact('lead', 'campaigns'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(StoreLeadRequest $request, Lead $lead)
+    public function update(Request $request, Lead $lead)
     {
-        $lead->update($request->validated());
-        return redirect()->route('leads.index')->with('success', 'Lead updated successfully.');
+        $this->authorize('update', $lead);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('leads')->ignore($lead->id)->where(function ($query) {
+                return $query->where('tenant_id', auth()->user()->tenant_id);
+            })],
+            'phone' => 'nullable|string',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+        ]);
+        $lead->update($validated);
+        return redirect()->route('leads.index')->with('success', 'Lead updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Lead $lead)
     {
+        $this->authorize('delete', $lead);
         $lead->delete();
-        return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
+        return back()->with('success', 'Lead deleted.');
     }
 }

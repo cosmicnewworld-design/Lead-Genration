@@ -52,4 +52,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/leads/{lead}', [AdminController::class, 'destroy'])->name('leads.destroy');
 });
 
+Route::middleware(['auth', 'verified'])->prefix('billing')->as('subscriptions.')->group(function () {
+    Route::get('/', [App\Http\Controllers\SubscriptionController::class, 'index'])->name('index');
+    Route::post('/', [App\Http\Controllers\SubscriptionController::class, 'store'])->name('store');
+    Route::post('/cancel', [App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('cancel');
+});
+
 require __DIR__.'/auth.php';

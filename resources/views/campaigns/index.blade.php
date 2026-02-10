@@ -3,9 +3,9 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Leads</h1>
-        @can('create', App\Models\Lead::class)
-            <a href="{{ route('leads.create') }}" class="btn btn-primary">Create Lead</a>
+        <h1>Campaigns</h1>
+        @can('create', App\Models\Campaign::class)
+            <a href="{{ route('campaigns.create') }}" class="btn btn-primary">Create Campaign</a>
         @endcan
     </div>
 
@@ -21,25 +21,21 @@
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Campaign</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($leads as $lead)
+                    @forelse ($campaigns as $campaign)
                         <tr>
-                            <td>{{ $lead->name }}</td>
-                            <td>{{ $lead->email }}</td>
-                            <td>{{ $lead->phone ?? 'N/A' }}</td>
-                            <td>{{ $lead->campaign->name ?? 'N/A' }}</td>
+                            <td>{{ $campaign->name }}</td>
+                            <td>{{ Str::limit($campaign->description, 70) }}</td>
                             <td>
-                                @can('update', $lead)
-                                    <a href="{{ route('leads.edit', $lead) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @can('update', $campaign)
+                                    <a href="{{ route('campaigns.edit', $campaign) }}" class="btn btn-sm btn-warning">Edit</a>
                                 @endcan
-                                @can('delete', $lead)
-                                    <form action="{{ route('leads.destroy', $lead) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this lead?');">
+                                @can('delete', $campaign)
+                                    <form action="{{ route('campaigns.destroy', $campaign) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this campaign?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -49,13 +45,13 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">No leads found.</td>
+                            <td colspan="3" class="text-center">No campaigns found.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
             <div class="mt-3">
-                {{ $leads->links() }}
+                {{ $campaigns->links() }}
             </div>
         </div>
     </div>
