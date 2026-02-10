@@ -28,7 +28,7 @@ class LeadController extends Controller
      */
     public function create()
     {
-        $businesses = Business::all();
+        $businesses = Business::where('tenant_id', config('tenant.id'))->get();
         return view('leads.create', compact('businesses'));
     }
 
@@ -37,7 +37,10 @@ class LeadController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        Lead::create($request->validated());
+        $lead = new Lead($request->validated());
+        $lead->tenant_id = config('tenant.id');
+        $lead->save();
+
         return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
     }
 
@@ -54,7 +57,7 @@ class LeadController extends Controller
      */
     public function edit(Lead $lead)
     {
-        $businesses = Business::all();
+        $businesses = Business::where('tenant_id', config('tenant.id'))->get();
         return view('leads.edit', compact('lead', 'businesses'));
     }
 

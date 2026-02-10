@@ -5,9 +5,13 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ScraperController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Tenant;
+use App\Models\User;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', [
+        'tenants' => Tenant::with('users')->get(),
+    ]);
 });
 
 Route::get('/dashboard', function () {

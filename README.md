@@ -4,6 +4,11 @@ This project is a powerful, full-stack lead generation and outreach automation p
 
 ## ✨ Implemented Features
 
+-   **Multi-Tenancy Architecture:**
+    -   Implemented a basic multi-tenant database schema with a `tenants` table.
+    -   Associated `users` and `leads` with tenants to ensure data isolation.
+    -   Seeded the database with sample tenants and users for demonstration.
+    -   Updated the UI to display tenants and their corresponding users.
 -   **Lead Management:** Full CRUD (Create, Read, Update, Delete) functionality for leads.
 -   **Secure Authentication:** A complete authentication system with middleware-protected routes for both users and administrators.
 -   **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all users and leads.
@@ -112,4 +117,3 @@ npm run dev
 
 ---
 *This README is a living document that will be updated as the project evolves.*
-

@@ -82,13 +82,19 @@
                         </div>
                         <div class="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-gray-800 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]">
                             <div class="pt-3 sm:pt-5">
-                                <h2 class="text-xl font-semibold text-black dark:text-white">Popular Movies</h2>
-                                <ul class="mt-4 space-y-2">
-                                    <li class="text-gray-700 dark:text-gray-300">The Shawshank Redemption</li>
-                                    <li class="text-gray-700 dark:text-gray-300">The Godfather</li>
-                                    <li class="text-gray-700 dark:text-gray-300">The Dark Knight</li>
-                                    <li class="text-gray-700 dark:text-gray-300">Pulp Fiction</li>
-                                </ul>
+                                <h2 class="text-xl font-semibold text-black dark:text-।white">Tenants and Users</h2>
+                                <div class="mt-4 space-y-4">
+                                    @foreach ($tenants as $tenant)
+                                        <div class="rounded-lg bg-gray-200 dark:bg-gray-700 p-4">
+                                            <h3 class="text-lg font-semibold text-black dark:text-white">{{ $tenant->name }}</h3>
+                                            <ul class="mt-2 space-y-1">
+                                                @foreach ($tenant->users as $user)
+                                                    <li class="text-gray-700 dark:text-gray-300">{{ $user->name }} ({{ $user->email }})</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>

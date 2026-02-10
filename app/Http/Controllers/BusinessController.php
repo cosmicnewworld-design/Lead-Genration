@@ -41,7 +41,9 @@ class BusinessController extends Controller
             'target_audience' => 'required',
         ]);
 
-        Business::create($request->all());
+        $business = new Business($request->all());
+        $business->tenant_id = config('tenant.id');
+        $business->save();
 
         return redirect()->route('businesses.index')
             ->with('success', 'Business created successfully.');
