@@ -26,4 +26,9 @@ class Lead extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+    public function campaignRuns()
+    {
+        return $this->belongsToMany(CampaignRun::class, 'campaign_run_leads')->withTimestamps();
+    }
 }

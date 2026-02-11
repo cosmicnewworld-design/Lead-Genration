@@ -2,7 +2,7 @@
 
 #### Overview
 
-This document outlines the plan to add multi-tenancy and a billing system to a Laravel application. The goal is to isolate data for different tenants and charge them for usage based on subscription plans.
+This document outlines the plan to add multi-tenancy, a billing system, a public lead capture system, and email campaign automation to a Laravel application. The goal is to isolate data for different tenants, charge them for usage, allow them to capture leads, and enable automated email outreach campaigns.
 
 #### Implemented Features
 
@@ -12,29 +12,29 @@ This document outlines the plan to add multi-tenancy and a billing system to a L
     *   Implemented a global `TenantScope` to automatically filter data.
     *   Used an `IdentifyTenant` middleware to set the tenant context for each request.
 
-#### Current Plan: Implement Tenant-Centric Billing
+*   **Public Lead Capture:**
+    *   Created a public-facing lead capture form at `/capture/{tenant_slug}`.
+    *   Added a `PublicLeadCaptureController` to handle form display and submission.
+    *   Leads are automatically associated with the correct tenant based on the URL slug.
+    *   Added a unique `slug` to the `tenants` table to identify tenants in the URL.
 
-This plan outlines the steps to integrate a subscription-based billing system using Laravel Cashier (Stripe).
+*   **Email Campaign Automation:**
+    *   **Data Structure:**
+        *   `Campaign` model: Represents an email campaign.
+        *   `CampaignStep` model: Defines individual emails within a campaign, including subject, body, and delay.
+        *   `CampaignRun` model: Tracks an active or completed campaign for a set of leads.
+        *   Migrations created for `campaigns`, `campaign_steps`, `campaign_runs`, and the `campaign_run_lead` pivot table.
+    *   **Core Logic:**
+        *   `CampaignAutomationController`: Handles starting a campaign for selected leads. It creates a `CampaignRun` and dispatches jobs for the first step.
+        *   `ProcessCampaignEmail` Job: A queued job responsible for sending individual campaign emails. This allows for delayed sending and prevents blocking of the UI.
+    *   **Authorization:**
+        *   `CampaignPolicy`: Ensures that only the tenant who owns a campaign can view, manage, or start it.
+    *   **User Interface:**
+        *   Resourceful `CampaignsController` for full CRUD management of campaigns.
+        *   Resourceful `CampaignStepController` for full CRUD management of campaign steps, nested under campaigns.
+        *   A `campaigns/show.blade.php` view that displays campaign details, its steps (with edit/delete functionality), and a form to select leads and start the campaign.
+        *   Views for creating and editing campaign steps.
 
-1.  **Packages & Configuration:**
-    *   Install `laravel/cashier`.
-    *   Configure `.env` with Stripe API keys (`STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET`).
+#### Current Plan
 
-2.  **Database & Models:**
-    *   Run a migration to add Cashier's columns to the `users` table.
-    *   Add the `Billable` trait to the `User` model.
-    *   Create a `plans` table and `Plan` model to store plan details and limits (`max_leads`, `max_campaigns`, `max_team_members`).
-
-3.  **Subscription Logic:**
-    *   Create a `SubscriptionController` to handle plan selection and subscription creation.
-    *   Seed the database with initial plans (e.g., Basic, Pro).
-
-4.  **Usage Limits:**
-    *   Create a middleware (`EnforceUsageLimits`) to check if a tenant has exceeded their plan's limits.
-    *   Apply this middleware to the relevant routes (e.g., creating leads, campaigns).
-
-5.  **Billing Dashboard:**
-    *   Create Blade views for tenants to manage their subscription, view billing history, and change plans.
-
-6.  **Stripe Webhooks:**
-    *   Configure a route and controller to handle webhooks from Stripe, ensuring subscription data is always in sync.
+The campaign automation feature is now functionally complete. Users can create campaigns, add, edit, and delete steps, and start the campaign for their leads. The next step to improve this feature would be to enhance the user experience by adding a rich text editor for the email body in the campaign step forms. This will allow users to create more visually appealing and effective emails.

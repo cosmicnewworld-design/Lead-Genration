@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ScraperController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PublicLeadCaptureController;
+use App\Http\Controllers\CampaignAutomationController;
+use App\Http\Controllers\CampaignsController;
+use App\Http\Controllers\CampaignStepController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tenant;
 use App\Models\User;
@@ -36,10 +40,16 @@ Route::middleware('auth')->group(function () {
     // Replaced individual lead routes with a resourceful route
     Route::resource('leads', LeadController::class);
 
+    Route::resource('campaigns', CampaignsController::class);
+    Route::resource('campaigns.steps', CampaignStepController::class)->shallow();
+
     Route::get('/scraper', function () {
         return view('scraper');
     })->name('scraper');
     Route::post('/scrape', [ScraperController::class, 'scrape'])->name('scrape.post');
+
+    // Campaign Automation
+    Route::post('/campaigns/{campaign}/start', [CampaignAutomationController::class, 'start'])->name('campaigns.start');
 });
 
 // Admin Routes
@@ -57,5 +67,9 @@ Route::middleware(['auth', 'verified'])->prefix('billing')->as('subscriptions.')
     Route::post('/', [App\Http\Controllers\SubscriptionController::class, 'store'])->name('store');
     Route::post('/cancel', [App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('cancel');
 });
+
+// Public Lead Capture
+Route::get('/capture/{tenant_slug}', [PublicLeadCaptureController::class, 'show'])->name('public.capture.show');
+Route::post('/capture/{tenant_slug}', [PublicLeadCaptureController::class, 'store'])->name('public.capture.store');
 
 require __DIR__.'/auth.php';

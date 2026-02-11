@@ -26,4 +26,14 @@ class Campaign extends Model
     {
         return $this->hasMany(Lead::class);
     }
+
+    public function steps()
+    {
+        return $this->hasMany(CampaignStep::class)->orderBy('order');
+    }
+
+    public function runs()
+    {
+        return $this->hasMany(CampaignRun::class);
+    }
 }
