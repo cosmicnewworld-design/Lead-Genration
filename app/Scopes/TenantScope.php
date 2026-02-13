@@ -5,20 +5,16 @@ namespace App\Scopes;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Multitenancy\Contracts\CurrentTenant;
 
 class TenantScope implements Scope
 {
-    /**
-     * Apply the scope to a given Eloquent query builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
     public function apply(Builder $builder, Model $model)
     {
-        if (config()->has('tenant.id')) {
-            $builder->where('tenant_id', config('tenant.id'));
+        $currentTenant = app(CurrentTenant::class);
+
+        if ($currentTenant->check()) {
+            $builder->where($model->qualifyColumn('tenant_id'), $currentTenant->getId());
         }
     }
 }

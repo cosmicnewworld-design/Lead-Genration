@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Multitenancy\Models\Concerns\IsScopedByTenant;
 
 class Lead extends Model
 {
-    use HasFactory, IsScopedByTenant;
+    use HasFactory, BelongsToTenant;
 
     protected $fillable = ['name', 'email', 'phone', 'campaign_id'];
 

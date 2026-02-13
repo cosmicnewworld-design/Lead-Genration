@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'landlord'),
+    'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,12 +37,12 @@ return [
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => database_path('database.sqlite'),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'landlord' => [
+        'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
@@ -62,12 +62,12 @@ return [
             ]) : [],
         ],
 
-        'tenant' => [
-            'driver' => 'mysql',
+        'mariadb' => [
+            'driver' => 'mariadb',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => null,
+            'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -87,14 +87,14 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => 'require',
+            'sslmode' => 'prefer',
         ],
 
         'sqlsrv' => [
@@ -108,6 +108,8 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
     ],
@@ -117,9 +119,9 @@ return [
     | Migration Repository Table
     |--------------------------------------------------------------------------
     |
-    | This table keeps track of all the migrations that have already run for
-    | your application. Using this information, we can determine which of
-    | the migrations on disk haven't actually been run in the database.
+    | This table keeps track of all the migrations that have already been run
+    | for your application. Using this information, we can determine which
+    | of the migrations on disk haven't actually been run in the database.
     |
     */
 
@@ -130,13 +132,9 @@ return [
     | Redis Databases
     |--------------------------------------------------------------------------
     |
-    | Redis is an open source, fast, our-of-your-box key-value data store
-    | that can be used as a database, cache, broker, and more. Redis is
-    | versatile and since it is in-memory, it is extremely fast.
-    |
-    | Here you may configure the Redis servers used by your application.
-    |
-    | Supported drivers: "phpredis", "predis"
+    | Redis is an open source, fast, advanced key-value store that also
+    | provides a richer body of commands than a typical key-value system
+    | such as APC or Memcached. Laravel makes it easy to dig right in.
     |
     */
 
@@ -152,6 +150,7 @@ return [
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
@@ -160,6 +159,7 @@ return [
         'cache' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),

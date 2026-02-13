@@ -4,14 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Lead;
 use App\Models\Campaign;
+use App\Services\LeadService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class LeadController extends Controller
 {
+    protected $leadService;
+
+    public function __construct(LeadService $leadService)
+    {
+        $this->leadService = $leadService;
+    }
+
     public function index()
     {
-        $leads = Lead::with('campaign')->latest()->paginate(10);
+        $leads = $this->leadService->getAllLeads();
         return view('leads.index', compact('leads'));
     }
 
@@ -33,7 +41,7 @@ class LeadController extends Controller
             'phone' => 'nullable|string',
             'campaign_id' => 'nullable|exists:campaigns,id',
         ]);
-        auth()->user()->tenant->leads()->create($validated);
+        $this->leadService->createLead($validated);
         return redirect()->route('leads.index')->with('success', 'Lead created.');
     }
 
@@ -55,14 +63,14 @@ class LeadController extends Controller
             'phone' => 'nullable|string',
             'campaign_id' => 'nullable|exists:campaigns,id',
         ]);
-        $lead->update($validated);
+        $this->leadService->updateLead($lead, $validated);
         return redirect()->route('leads.index')->with('success', 'Lead updated.');
     }
 
     public function destroy(Lead $lead)
     {
         $this->authorize('delete', $lead);
-        $lead->delete();
+        $this->leadService->deleteLead($lead);
         return back()->with('success', 'Lead deleted.');
     }
 }

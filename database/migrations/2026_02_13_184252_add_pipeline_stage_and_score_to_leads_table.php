@@ -14,7 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->foreignId('tenant_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('pipeline_stage_id')->nullable()->after('tenant_id');
+            $table->integer('score')->default(0)->after('email');
+
+            $table->foreign('pipeline_stage_id')->references('id')->on('pipeline_stages')->onDelete('set null');
         });
     }
 
@@ -26,8 +29,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->dropForeign(['tenant_id']);
-            $table->dropColumn('tenant_id');
+            $table->dropForeign(['pipeline_stage_id']);
+            $table->dropColumn(['pipeline_stage_id', 'score']);
         });
     }
 };

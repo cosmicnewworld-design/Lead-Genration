@@ -2,75 +2,38 @@
 
 namespace App\Services;
 
+use App\Repositories\LeadRepository;
 use App\Models\Lead;
-use App\Http\Requests\StoreLeadRequest;
-use App\Http\Requests\UpdateLeadRequest;
-use App\Http\Requests\UpdateLeadStatusRequest;
-use App\Jobs\VerifyLeadEmailJob;
-use App\Jobs\FindLeadLinkedInProfileJob;
 
 class LeadService
 {
-    /**
-     * Create a new lead and dispatch background jobs.
-     *
-     * @param StoreLeadRequest $request
-     * @return Lead
-     */
-    public function createLead(StoreLeadRequest $request): Lead
+    protected $leadRepository;
+
+    public function __construct(LeadRepository $leadRepository)
     {
-        $lead = Lead::create($request->validated());
-
-        // Dispatch jobs for background processing
-        VerifyLeadEmailJob::dispatch($lead);
-        FindLeadLinkedInProfileJob::dispatch($lead);
-
-        return $lead;
+        $this->leadRepository = $leadRepository;
     }
 
-    /**
-     * Update an existing lead and dispatch relevant background jobs.
-     *
-     * @param UpdateLeadRequest $request
-     * @param Lead $lead
-     * @return Lead
-     */
-    public function updateLead(UpdateLeadRequest $request, Lead $lead): Lead
+    public function getAllLeads()
     {
-        $lead->update($request->validated());
-
-        // Dispatch jobs if relevant data has changed
-        if ($request->has('email')) {
-            VerifyLeadEmailJob::dispatch($lead->fresh());
-        }
-        if ($request->has('name') || $request->has('company_name')) {
-            FindLeadLinkedInProfileJob::dispatch($lead->fresh());
-        }
-
-        return $lead;
+        return $this->leadRepository->getAll();
     }
 
-    /**
-     * Update the status of a lead.
-     *
-     * @param UpdateLeadStatusRequest $request
-     * @param Lead $lead
-     * @return Lead
-     */
-    public function updateLeadStatus(UpdateLeadStatusRequest $request, Lead $lead): Lead
+    public function createLead(array $data)
     {
-        $lead->update($request->validated());
-        return $lead;
+        // Add any business logic here before creating the lead
+        return $this->leadRepository->create($data);
     }
 
-    /**
-     * Delete a lead.
-     *
-     * @param Lead $lead
-     * @return void
-     */
-    public function deleteLead(Lead $lead): void
+    public function updateLead(Lead $lead, array $data)
     {
-        $lead->delete();
+        // Add any business logic here before updating the lead
+        return $this->leadRepository->update($lead, $data);
+    }
+
+    public function deleteLead(Lead $lead)
+    {
+        // Add any business logic here before deleting the lead
+        return $this->leadRepository->delete($lead);
     }
 }

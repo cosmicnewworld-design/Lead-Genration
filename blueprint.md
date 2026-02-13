@@ -1,105 +1,44 @@
-# Blueprint: Enterprise SaaS Lead & Outreach Platform
+# Project Blueprint
 
-## 1. Project Vision
+## Overview
 
-To transform a basic Laravel lead generation application into a fully advanced, production-ready, multi-tenant SaaS platform. The platform will follow enterprise-grade architecture principles, ensuring scalability, security, and maintainability.
+This project is a full-stack Laravel application. It appears to be a multi-tenant CRM or marketing automation platform.
 
----
+## Style and Design
 
-## 2. Structured Development Roadmap
+*No frontend styles have been implemented yet.*
 
-The project will be developed in structured phases.
+## Features
 
-### **PHASE 1 – Core SaaS Foundation (Complete)**
-*   **Objective:** Establish a robust and secure foundation for a multi-tenant application.
-*   **Tasks:**
-    1.  **Refactor into Clean Architecture:** Standardize code structure. *(Partially addressed during refactoring)*
-    2.  **Implement Proper Multi-Tenant Architecture:** Use `stancl/tenancyforlaravel` for database-level tenant isolation. **(DONE)**
-    3.  **Add Role & Permission System:** Use `spatie/laravel-permission` to create roles (Super Admin, Tenant Admin, Sales Manager, Sales Agent). **(DONE)**
-    4.  **Add Activity Logs & Audit Trail:** Use `spatie/laravel-activitylog` for tracking model changes. **(Installed)**
-    5.  **Add Centralized Configuration Management:** Create a mechanism for tenant-specific settings.
+### Database Schema
 
-### **PHASE 2 – Advanced Lead Management**
-*   **Objective:** Build powerful features for managing leads throughout their lifecycle.
-*   **Tasks:**
-    1.  Lead Scoring System
-    2.  Lead Tagging
-    3.  Duplicate Detection
-    4.  CSV Bulk Import/Export
-    5.  Pipeline System (Kanban View)
-    6.  Custom Lead Fields per Tenant
-    7.  Lead Assignment Logic (Auto & Manual)
+*   **Multi-tenancy:** The database is designed for multi-tenancy, with `tenants` and `tenant_id` columns on most tables.
+*   **Users and Teams:** The application has a standard `users` table, along with `teams` and `team_user` tables for collaborative work.
+*   **Leads:** A `leads` table is the core of the CRM functionality.
+*   **Campaigns:** The application includes `campaigns`, `campaign_steps`, `campaign_runs`, and related tables for marketing automation.
+*   **Billing:** The application has `subscriptions` and `subscription_items` tables, suggesting integration with a payment provider.
 
-### **PHASE 3 – Outreach & Automation Engine**
-*   **Objective:** Create a powerful engine for email outreach and marketing automation.
-*   **Tasks:**
-    1.  Drip Email Campaign Builder
-    2.  Email Templates with Variables
-    3.  Follow-up Automation Rules
-    4.  Open & Click Tracking
-    5.  Gmail SMTP per Tenant
-    6.  Queue-based Email Processing
-    7.  Scheduled Campaigns
+## Current Task: Fix Database Migration Issues
 
-### **PHASE 4 – AI & Intelligence**
-*   **Objective:** Integrate AI to provide intelligent insights and automate complex tasks.
-*   **Tasks:**
-    1.  AI-based Lead Scoring Algorithm
-    2.  AI Email Generator
-    3.  Smart Follow-up Suggestions
-    4.  Lead Priority Prediction
+### Plan
 
-### **PHASE 5 – SaaS Monetization (In Progress)**
-*   **Objective:** Implement a complete subscription and billing system.
-*   **Tasks:**
-    1.  Stripe Integration using Laravel Cashier **(In Progress)**
-    2.  Subscription Plans (Free Trial, Starter, Pro, Enterprise)
-    3.  Usage Limits (Leads, Emails)
-    4.  Subscription Middleware Protection
-    5.  Billing Dashboard
+1.  **Fix Database Connection:** The initial problem was a database connection error. This was resolved by:
+    *   Setting the `DB_CONNECTION` to `sqlite` in the `.env` file.
+    *   Hardcoding the `database` path in the `config/database.php` file to an absolute path.
+    *   Creating an empty `database/database.sqlite` file.
+2.  **Remove Redundant Migrations:** Several migrations were duplicated, causing "duplicate column" or "table already exists" errors. These were resolved by deleting the redundant migration files.
+3.  **Fix Migration Order:** An `add_indexes_to_foreign_keys` migration was running before the tables were created. This was resolved by renaming the migration to have a later timestamp.
+4.  **Create Missing Table:** The `campaigns` table was missing a migration. This was resolved by creating a new migration for the `campaigns` table.
 
-### **PHASE 6 – Analytics & Reporting**
-*   **Objective:** Provide tenants with actionable insights into their data.
-*   **Tasks:**
-    1.  Conversion Rate Tracking
-    2.  Campaign Performance Analytics
-    3.  Revenue Analytics
-    4.  Dashboard Charts
-    5.  Exportable Reports
+### Implemented Steps
 
-### **PHASE 7 – Production Hardening**
-*   **Objective:** Prepare the application for a production environment.
-*   **Tasks:**
-    1.  Redis Caching
-    2.  Queue Workers
-    3.  Rate Limiting
-    4.  API Authentication (Sanctum/Passport)
-    5.  Docker Setup
-    6.  CI/CD Ready Structure
-    7.  Security Best Practices
-
----
-
-## 3. Current Implementation Status
-
-### 3.1. PHASE 1 - Core SaaS Foundation (Complete)
-*   **Action:** Established a multi-tenant architecture using `stancl/tenancy` and a robust role-based access control system using `spatie/laravel-permission`.
-*   **Details:**
-    -   Refactored the application to support a multi-database tenancy model.
-    -   Removed legacy, single-tenancy `Role` and `Permission` models.
-    -   Configured `spatie/laravel-permission` to work seamlessly with the multi-tenant structure.
-    -   Created a `RolesAndPermissionsSeeder` to seed default roles (`Tenant Admin`, `Sales Manager`, `Sales Agent`) for new tenants.
-    -   Cleaned up the `User` model to remove conflicting tenancy traits.
-*   **Status:** **Completed**. The core foundation is now stable.
-
-### 3.2. PHASE 5 - SaaS Monetization (Started)
-*   **Action:** Initiated the integration of the subscription and billing system.
-*   **Package:** `laravel/cashier` for Stripe integration.
-*   **Progress:**
-    -   Installed `laravel/cashier` via Composer.
-    -   Pushed all recent changes to the Git repository.
-*   **Next:**
-    -   Configure Cashier by adding the `Billable` trait to the `Tenant` model.
-    -   Run the necessary database migrations for Cashier tables.
-    -   Create the `plans` table and model for managing subscription plans.
-    -   Develop the UI and backend logic for the subscription flow.
+*   Set `DB_CONNECTION=sqlite` in `.env`
+*   Set `DB_DATABASE` to `/workspace/database/database.sqlite` in `.env`.
+*   Modified `config/database.php` to hardcode the database path.
+*   Created `database/database.sqlite`.
+*   Deleted `database/migrations/2026_02_13_163721_add_tenant_id_to_users_table.php`.
+*   Deleted `database/migrations/2026_02_13_163755_add_tenant_id_to_leads_table.php`.
+*   Deleted `database/migrations/2026_02_13_184143_create_campaign_steps_table.php`.
+*   Renamed `database/migrations/2026_02_13_184643_add_indexes_to_foreign_keys.php` to `database/migrations/2027_01_01_000000_add_indexes_to_foreign_keys.php`.
+*   Created `database/migrations/2026_02_13_191732_create_campaigns_table.php` with the correct schema.
+*   Ran `php artisan migrate:fresh` successfully.

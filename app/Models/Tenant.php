@@ -4,21 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Cashier\Billable;
-use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
 use Spatie\Multitenancy\Models\Tenant as BaseTenant;
 
 class Tenant extends BaseTenant
 {
-    use HasFactory, Billable, UsesTenantConnection;
+    use HasFactory, Billable;
 
-    protected $fillable = ['name', 'database'];
+    protected $fillable = ['name', 'domain'];
 
-    protected $casts = [
-        'database' => 'array',
-    ];
-
-    public function getDatabaseName(): string
-    {
-        return $this->database['name'];
-    }
 }
