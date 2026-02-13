@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            TenantSeeder::class,
+            RolesAndPermissionsSeeder::class,
+            TenantSeeder::class, // This should come after roles seeder to ensure roles are available for tenants
         ]);
     }
 }
