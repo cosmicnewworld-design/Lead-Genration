@@ -1,40 +1,84 @@
-### `blueprint.md`
+# Lead Generation SaaS
 
-#### Overview
+This project is a powerful, full-stack lead generation and outreach automation platform built with the Laravel framework. It is designed to help businesses, sales teams, and marketing professionals streamline their lead management, automate outreach, and accelerate growth.
 
-This document outlines the plan to add multi-tenancy, a billing system, a public lead capture system, and email campaign automation to a Laravel application. The goal is to isolate data for different tenants, charge them for usage, allow them to capture leads, and enable automated email outreach campaigns.
+## ✨ Implemented Features
 
-#### Implemented Features
+-   **Lead Management:** Full CRUD (Create, Read, Update, Delete) functionality for leads.
+-   **Secure Authentication:** A complete authentication system with middleware-protected routes for both users and administrators.
+-   **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all users and leads.
+-   **Status Tracking:** Track and update the status of each lead (e.g., New, Contacted, Replied, Junk).
+-   **Data Enrichment Jobs:** Includes backend jobs for verifying lead emails and finding LinkedIn profiles.
+-   **Email Outreach:** A foundational system for sending outreach emails is in place.
+-   **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
 
-*   **Multi-Tenancy Architecture:**
-    *   Created a `tenants` table and `Tenant` model.
-    *   Associated `users`, `leads`, and `businesses` with tenants via a `tenant_id`.
-    *   Implemented a global `TenantScope` to automatically filter data.
-    *   Used an `IdentifyTenant` middleware to set the tenant context for each request.
+## 📅 Planned Features
 
-*   **Public Lead Capture:**
-    *   Created a public-facing lead capture form at `/capture/{tenant_slug}`.
-    *   Added a `PublicLeadCaptureController` to handle form display and submission.
-    *   Leads are automatically associated with the correct tenant based on the URL slug.
-    *   Added a unique `slug` to the `tenants` table to identify tenants in the URL.
+### Step 1: Foundational Upgrade (Multi-Tenancy & Core SaaS Features)
+-   **Multi-Tenant Architecture**: 
+    -   Separate tenant databases or tenant isolation.
+    -   Tenant-based user roles.
+    -   Admin panel for super admin.
+    -   Tenant subscription management.
+-   **Subscription & Billing System**:
+    -   Stripe integration.
+    -   Monthly & yearly plans.
+    -   Trial period.
+    -   Usage-based limits (leads per month, emails per month).
+-   **Modern UI/UX**:
+    -   Clean SaaS dashboard layout.
+    -   Dark/light mode.
+    -   Fully responsive design.
+    -   SaaS landing page.
+-   **Role & Permission System**:
+    -   Admin
+    -   Manager
+    -   Sales Agent
+    -   Custom permissions
 
-*   **Email Campaign Automation:**
-    *   **Data Structure:**
-        *   `Campaign` model: Represents an email campaign.
-        *   `CampaignStep` model: Defines individual emails within a campaign, including subject, body, and delay.
-        *   `CampaignRun` model: Tracks an active or completed campaign for a set of leads.
-        *   Migrations created for `campaigns`, `campaign_steps`, `campaign_runs`, and the `campaign_run_lead` pivot table.
-    *   **Core Logic:**
-        *   `CampaignAutomationController`: Handles starting a campaign for selected leads. It creates a `CampaignRun` and dispatches jobs for the first step.
-        *   `ProcessCampaignEmail` Job: A queued job responsible for sending individual campaign emails. This allows for delayed sending and prevents blocking of the UI.
-    *   **Authorization:**
-        *   `CampaignPolicy`: Ensures that only the tenant who owns a campaign can view, manage, or start it.
-    *   **User Interface:**
-        *   Resourceful `CampaignsController` for full CRUD management of campaigns.
-        *   Resourceful `CampaignStepController` for full CRUD management of campaign steps, nested under campaigns.
-        *   A `campaigns/show.blade.php` view that displays campaign details, its steps (with edit/delete functionality), and a form to select leads and start the campaign.
-        *   Views for creating and editing campaign steps.
+### Step 2: Advanced Lead & Campaign Management
+-   **Advanced Lead Features**:
+    -   Lead scoring system.
+    -   Lead tagging.
+    -   Pipeline stages (Kanban style).
+    -   Import/export CSV.
+    -   Bulk lead upload.
+    -   Duplicate detection.
+-   **AI & Automation**:
+    -   AI-based lead scoring logic.
+    -   AI email generator.
+    -   Automated email sequences (drip campaigns).
+    -   Auto follow-up system.
+    -   Scheduled campaigns.
 
-#### Current Plan
+### Step 3: Integrations & Data Enrichment
+-   **Outreach Integrations**:
+    -   SMTP configuration per tenant.
+    -   Gmail API integration.
+    -   Webhook support.
+    -   WhatsApp API integration.
+    -   SMS integration.
+-   **Data Enrichment**:
+    -   Email validation API.
+    -   Company data enrichment.
+    -   LinkedIn profile scraping structure (without violating policies).
 
-The campaign automation feature is now functionally complete. Users can create campaigns, add, edit, and delete steps, and start the campaign for their leads. The next step to improve this feature would be to enhance the user experience by adding a rich text editor for the email body in the campaign step forms. This will allow users to create more visually appealing and effective emails.
+### Step 4: Analytics, Optimization & Deployment
+-   **Analytics Dashboard**:
+    -   Conversion rate tracking.
+    -   Email open/click tracking.
+    -   Revenue analytics.
+    -   Campaign performance reports.
+    -   Graphs and charts.
+-   **Security & Optimization**:
+    -   API rate limiting.
+    -   Activity logs.
+    -   Audit trail.
+    -   Queue system for emails.
+    -   Redis support.
+    -   Caching optimization.
+-   **Deployment Ready**:
+    -   Docker setup.
+    -   Production config.
+    -   CI/CD ready.
+    -   Environment configuration guide.

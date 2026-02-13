@@ -3,27 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Laravel\Cashier\Billable;
+use Spatie\Multitenancy\Models\Concerns\UsesTenantConnection;
+use Spatie\Multitenancy\Models\Tenant as BaseTenant;
 
-class Tenant extends Model
+class Tenant extends BaseTenant
 {
-    use HasFactory, Billable;
+    use HasFactory, Billable, UsesTenantConnection;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'database'];
 
-    public function users()
+    protected $casts = [
+        'database' => 'array',
+    ];
+
+    public function getDatabaseName(): string
     {
-        return $this->hasMany(User::class);
-    }
-
-    public function campaigns()
-    {
-        return $this->hasMany(Campaign::class);
-    }
-
-    public function leads()
-    {
-        return $this->hasMany(Lead::class);
+        return $this->database['name'];
     }
 }

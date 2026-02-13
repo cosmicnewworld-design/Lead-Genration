@@ -2,25 +2,15 @@
 
 namespace App\Models;
 
-use App\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Multitenancy\Models\Concerns\IsScopedByTenant;
 
 class Lead extends Model
 {
-    use HasFactory;
+    use HasFactory, IsScopedByTenant;
 
-    protected $fillable = ['name', 'email', 'phone', 'tenant_id', 'campaign_id'];
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new TenantScope());
-    }
-
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class);
-    }
+    protected $fillable = ['name', 'email', 'phone', 'campaign_id'];
 
     public function campaign()
     {

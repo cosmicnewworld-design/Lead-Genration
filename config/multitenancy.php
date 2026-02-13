@@ -1,44 +1,25 @@
-
 <?php
 
-use Illuminate\Broadcasting\BroadcastEvent;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Events\QueuedClosure;
-use Illuminate\Queue\SerializesModels;
+use App\TenantFinder\DomainTenantFinder;
 use Spatie\Multitenancy\Actions\ForgetCurrentTenantAction;
 use Spatie\Multitenancy\Actions\MakeQueueableTenantAwareAction;
 use Spatie\Multitenancy\Actions\MakeTenantCurrentAction;
 use Spatie\Multitenancy\Actions\MigrateTenantAction;
-use Spatie\Multitenancy\Concerns\UsesLandlordConnection;
-use Spatie\Multitenancy\Contracts\CurrentTenant;
-use Spatie\Multitenancy\Contracts\IsTenant;
-use Spatie\Multitenancy\Events\ForgottenCurrentTenantEvent;
-use Spatie\Multitenancy\Events\MakingCurrentTenantEvent;
-use Spatie\Multitenancy\Exceptions\CurrentTenantCouldNotBeDeterminedInJob;
-use Spatie\Multitenancy\Exceptions\InvalidConfiguration;
-use Spatie\Multitenancy\Exceptions\JobNotTenantAware;
-use Spatie\Multitenancy\Jobs\NotTenantAware;
-use Spatie\Multitenancy\Jobs\TenantAware;
-use Spatie\Multitenancy\Listeners\ClearBoundCurrentTenantListener;
-use Spatie\Multitenancy\Listeners\QueueTenantAwareJobs;
-use Spatie\Multitenancy\Models\Concerns\IsScopedByTenant;
-use Spatie\Multitenancy\Models\Tenant;
-use Spatie\Multitenancy\Tasks\PrefixCacheTask;
 use Spatie\Multitenancy\Tasks\SwitchTenantDatabaseTask;
 
 return [
     /*
      * This class is responsible for determining which tenant should be current
-     * for the given request. 
-     * 
+     * for the given request.
+     *
      * This class should extend `Spatie\Multitenancy\TenantFinder\TenantFinder`
      *
      * You can change this to a class of your own that extends the one above.
-     * 
+     *
      * In the default implementation, we'll look for a `tenant` parameter in the route
      * and use that to decide which tenant is current.
      */
-    'tenant_finder' => null,
+    'tenant_finder' => DomainTenantFinder::class,
 
     /*
      * These fields are used by the tenancy setup command to determine
@@ -54,8 +35,7 @@ return [
      * A valid task is any class that implements `Spatie\Multitenancy\Tasks\SwitchTenantTask`
      */
     'switch_tenant_tasks' => [
-        // \Spatie\Multitenancy\Tasks\PrefixCacheTask::class,
-        // \Spatie\Multitenancy\Tasks\SwitchTenantDatabaseTask::class,
+        SwitchTenantDatabaseTask::class,
     ],
 
     /*
@@ -79,18 +59,18 @@ return [
      *
      * Set to `null` to use the default connection.
      */
-    'landlord_database_connection_name' => null,
+    'landlord_database_connection_name' => 'landlord',
 
     /*
      * The connection name to reach the tenant database.
      *
      * Set to `null` to use the default connection.
      */
-    'tenant_database_connection_name' => null,
+    'tenant_database_connection_name' => 'tenant',
 
     /*
      * Set this to `true` if you like to apply the tenant scope on framework classes.
-     * 
+     *
      * For example, if you want to scope the cache, you can set this to `true`.
      * Be aware that this might break certain framework functionalities.
      */
@@ -105,29 +85,29 @@ return [
      * Set this to a class that implements `Spatie\Multitenancy\Actions\ForgetCurrentTenantAction`
      * to customize the logic that is executed when forgetting a tenant.
      */
-    'forget_current_tenant_action' => \Spatie\Multitenancy\Actions\ForgetCurrentTenantAction::class,
+    'forget_current_tenant_action' => ForgetCurrentTenantAction::class,
 
     /*
      * Set this to a class that implements `Spatie\Multitenancy\Actions\MakeTenantCurrentAction`
      * to customize the logic that is executed when making a tenant current.
      */
-    'make_tenant_current_action' => \Spatie\Multitenancy\Actions\MakeTenantCurrentAction::class,
+    'make_tenant_current_action' => MakeTenantCurrentAction::class,
 
     /*
      * Set this to a class that implements `Spatie\Multitenancy\Actions\MakeQueueableTenantAwareAction`
      * to customize the logic that is executed when making a queueable tenant aware.
      */
-    'make_queueable_tenant_aware_action' => \Spatie\Multitenancy\Actions\MakeQueueableTenantAwareAction::class,
+    'make_queueable_tenant_aware_action' => MakeQueueableTenantAwareAction::class,
 
     /*
      * Set this to a class that implements `Spatie\Multitenancy\Actions\MigrateTenantAction`
      * to customize the logic that is executed when migrating a tenant.
      */
-    'migrate_tenant_action' => \Spatie\Multitenancy\Actions\MigrateTenantAction::class,
+    'migrate_tenant_action' => MigrateTenantAction::class,
 
     /*
      * The name of the column that will be used to store the tenant id.
-     * 
+     *
      * This is used by the `IsScopedByTenant` trait.
      */
     'tenant_id_column_name' => 'tenant_id',
