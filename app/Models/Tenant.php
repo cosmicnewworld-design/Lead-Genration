@@ -10,6 +10,6 @@ class Tenant extends BaseTenant
 {
     use HasFactory, Billable;
 
-    protected $fillable = ['name', 'domain'];
+    protected $fillable = ['name', 'domain', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'];
 
 }

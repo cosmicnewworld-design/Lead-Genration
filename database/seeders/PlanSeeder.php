@@ -16,19 +16,27 @@ class PlanSeeder extends Seeder
     public function run()
     {
         Plan::create([
-            'name' => 'Free Tier',
-            'slug' => 'free-tier',
-            'stripe_price_id' => 'price_free_tier_placeholder',
-            'price' => 0.00,
-            'description' => 'Basic features for getting started.',
+            'name' => 'Basic',
+            'slug' => 'basic',
+            'stripe_plan_id' => 'price_basic_placeholder',
+            'price' => 9.99,
+            'description' => 'Includes basic CRM and marketing features, up to 100 leads, and 1 campaign.'
         ]);
 
         Plan::create([
-            'name' => 'Pro Tier',
-            'slug' => 'pro-tier',
-            'stripe_price_id' => 'price_pro_tier_placeholder',
-            'price' => 29.00,
-            'description' => 'Advanced features for growing businesses.',
+            'name' => 'Pro',
+            'slug' => 'pro',
+            'stripe_plan_id' => 'price_pro_placeholder',
+            'price' => 29.99,
+            'description' => 'Includes all Basic features, plus up to 1,000 leads, 10 campaigns, and basic reporting.'
+        ]);
+
+        Plan::create([
+            'name' => 'Business',
+            'slug' => 'business',
+            'stripe_plan_id' => 'price_business_placeholder',
+            'price' => 59.99,
+            'description' => 'Includes all Pro features, plus unlimited leads, unlimited campaigns, advanced reporting, and API access.'
         ]);
     }
 }

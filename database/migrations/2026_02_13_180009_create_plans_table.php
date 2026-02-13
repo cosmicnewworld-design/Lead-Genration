@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('stripe_price_id')->unique();
+            $table->string('stripe_plan_id')->unique();
             $table->decimal('price', 8, 2);
             $table->text('description')->nullable();
             $table->timestamps();
