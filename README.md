@@ -1,119 +1,109 @@
-# Lead Generation SaaS
+# Lead Generation SaaS Platform
 
-This project is a powerful, full-stack lead generation and outreach automation platform built with the Laravel framework. It is designed to help businesses, sales teams, and marketing professionals streamline their lead management, automate outreach, and accelerate growth.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## ✨ Implemented Features
+A powerful, multi-tenant SaaS platform designed to help businesses manage leads, automate email campaigns, and gain actionable insights through a powerful analytics dashboard. Built with the Laravel framework.
 
--   **Multi-Tenancy Architecture:**
-    -   Implemented a basic multi-tenant database schema with a `tenants` table.
-    -   Associated `users` and `leads` with tenants to ensure data isolation.
-    -   Seeded the database with sample tenants and users for demonstration.
-    -   Updated the UI to display tenants and their corresponding users.
--   **Lead Management:** Full CRUD (Create, Read, Update, Delete) functionality for leads.
--   **Secure Authentication:** A complete authentication system with middleware-protected routes for both users and administrators.
--   **Admin Dashboard:** A dedicated dashboard for administrators to view and manage all users and leads.
--   **Status Tracking:** Track and update the status of each lead (e.g., New, Contacted, Replied, Junk).
--   **Data Enrichment Jobs:** Includes backend jobs for verifying lead emails and finding LinkedIn profiles.
--   **Email Outreach:** A foundational system for sending outreach emails is in place.
--   **Modern UI/UX:** A responsive and intuitive user interface built with Blade and Tailwind CSS.
+## ✨ Key Features
 
-## 📅 Roadmap to Advanced SaaS
+This platform is being architected to provide a robust, scalable, and secure environment for managing sales and marketing workflows.
 
-The following is a strategic roadmap to upgrade this platform into an advanced, multi-tenant SaaS application similar to industry leaders like Apollo, Instantly, or HubSpot.
+-   **🏢 Multi-Tenant Architecture:**
+    -   Securely isolates data for each customer (tenant).
+    -   Allows users to be part of multiple teams or workspaces.
+    -   Customizable settings for each tenant.
 
-### **Phase 1: Foundational SaaS Architecture (Multi-Tenancy)**
+-   **💳 Subscription & Billing System (Stripe Integration):**
+    -   Seamless integration with Stripe for recurring subscription billing.
+    -   Support for multiple plans (e.g., Free, Pro, Enterprise).
+    -   Automated invoicing and payment processing.
+    -   Usage-based billing for leads or emails.
 
--   **Goal:** Re-architect the application to securely serve multiple customers (tenants) from a single codebase.
--   **Tasks:**
-    -   Implement a multi-tenant database schema using a `team_id` or `workspace_id` foreign key on all tenant-specific data (leads, campaigns, etc.).
-    -   Create automatic tenant identification middleware based on the logged-in user.
-    -   Refactor all queries and logic to be tenant-aware, ensuring data isolation.
-    -   Implement team/workspace management (create workspace, invite members).
+-   **🤖 Email Automation System:**
+    -   Create and manage powerful email outreach sequences.
+    -   Personalize emails with dynamic variables.
+    -   Track email opens, clicks, and replies.
+    -   Schedule campaigns to run at optimal times.
+
+-   **📊 Dashboard & Analytics:**
+    -   A comprehensive dashboard to visualize key metrics (leads acquired, conversion rates, etc.).
+    -   Detailed reports on campaign performance and team productivity.
+    -   Filterable and exportable data for deeper analysis.
+
+-   **🔐 Role-Based Access Control (RBAC):**
+    -   Granular control over what users can see and do.
+    -   Pre-defined roles like Admin, Manager, and Sales Agent.
+    -   Customizable permissions for specific business needs.
+
+## 💻 Tech Stack
+
+-   **Backend:** Laravel, PHP
+-   **Database:** PostgreSQL (via Supabase)
+-   **Frontend:** Blade, Tailwind CSS, Vite
+-   **Payments:** Stripe (via Laravel Cashier)
+
+## 🚀 Roadmap to SaaS
+
+This project is following a phased approach to deliver a market-ready SaaS application.
+
+### **Phase 1: Foundational SaaS Architecture (In Progress)**
+
+-   **Goal:** Re-architect the application to securely serve multiple customers (tenants).
+-   **Status:** Multi-tenancy using `stancl/tenancyforlaravel` is implemented. Tenant-aware models and routing are in place.
 
 ### **Phase 2: User Roles, Permissions & Subscription Management**
 
 -   **Goal:** Introduce role-based access control (RBAC) and a complete subscription and billing system.
 -   **Tasks:**
-    -   Integrate `spatie/laravel-permission` to manage roles (e.g., Owner, Admin, Member) and permissions within each tenant workspace.
-    -   Design and implement subscription plans (`plans`, `subscriptions`, `plan_features` tables).
-    -   Integrate Laravel Cashier with Stripe for subscription billing and lifecycle management.
-    -   Implement middleware to restrict feature access based on the tenant's subscription plan and usage limits.
+    -   Integrate `spatie/laravel-permission` to manage roles and permissions.
+    -   Design and implement subscription plans.
+    -   Integrate Laravel Cashier with Stripe for billing.
+    -   Implement middleware to restrict features based on subscription status.
 
-### **Phase 3: Advanced Lead & Campaign Automation**
+### **Phase 3: Core SaaS Features (Email & Analytics)**
 
--   **Goal:** Build a powerful, multi-step drip campaign engine.
+-   **Goal:** Build the primary features that deliver value to customers.
 -   **Tasks:**
-    -   Create database tables for `campaigns`, `sequences` (steps), and `sequence_emails`.
-    -   Develop a `CampaignManager` service to add leads to campaigns and schedule the first email.
-    -   Build a scheduled job (`SendCampaignEmailJob`) that processes the sequence steps, applies delays, and sends emails.
-    -   Implement conditions (e.g., "stop if replied") to make sequences intelligent.
+    -   Develop a full-featured email automation and campaign management system.
+    -   Build a powerful and interactive analytics dashboard.
 
-### **Phase 4: Analytics, Lead Scoring & Segmentation**
+## 🔧 Getting Started (Local Development)
 
--   **Goal:** Provide actionable insights and intelligence.
--   **Tasks:**
-    -   Implement email open and link click tracking using tracking pixels and redirect URLs.
-    -   Create an analytics dashboard to display campaign metrics (open rate, reply rate, etc.).
-    -   Develop a lead scoring system based on actions (e.g., `+10` for reply, `+1` for open).
-    -   Implement lead segmentation based on properties and scores (e.g., "Hot Leads," "Engaged in USA").
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/cosmicnewworld-design/Lead-Genration.git
+    cd Lead-Genration
+    ```
 
-### **Phase 5: CRM Pipeline & Multi-Channel Outreach**
+2.  **Install dependencies:**
+    ```bash
+    composer install
+    npm install
+    ```
 
--   **Goal:** Add CRM functionality and expand outreach beyond email.
--   **Tasks:**
-    -   Build a visual, Kanban-style deal pipeline (`pipelines`, `pipeline_stages` tables).
-    -   Integrate WhatsApp Business API for automated WhatsApp messaging.
-    -   (Carefully) explore LinkedIn outreach automation, respecting their terms of service.
+3.  **Setup environment:**
+    -   Copy `.env.example` to `.env`.
+    -   Update database credentials and other environment variables.
+    -   Generate an application key: `php artisan key:generate`
 
-## 🚀 Tech Stack
+4.  **Run database migrations:**
+    ```bash
+    php artisan migrate
+    ```
 
--   **Backend:** [Laravel](https://laravel.com/), [PHP](https://www.php.net/)
--   **Frontend:** [Tailwind CSS](https://tailwindcss.com/), [Blade](https://laravel.com/docs/blade), [Vite](https://vitejs.dev/)
--   **Database:** [SQLite](https://www.sqlite.org/index.html) (default), compatible with [MySQL](https://www.mysql.com/) or [PostgreSQL](https://www.postgresql.org/)
--   **Development Environment:** [Node.js](https://nodejs.org/)
+5.  **Run the development servers:**
+    ```bash
+    # In terminal 1
+    php artisan serve
 
-## ⚙️ Installation
+    # In terminal 2
+    npm run dev
+    ```
 
-Follow these steps to set up the project locally.
+## 🤝 Contributing
 
-#### 1. Clone the Repository
+Contributions are welcome! Please feel free to submit a pull request or open an issue.
 
-```bash
-git clone https://github.com/cosmicnewworld-design/Lead-Genration.git
-cd Lead-Genration
-```
+## 📄 License
 
-#### 2. Install Dependencies
-
-```bash
-composer install
-npm install
-```
-
-#### 3. Set Up Environment
-
-Copy the `.env.example` file to `.env` and configure your database and other services.
-
-```bash
-cp .env.example .env
-php artisan key:generate
-```
-
-#### 4. Run Database Migrations
-
-```bash
-php artisan migrate
-```
-
-#### 5. Run the Development Servers
-
-```bash
-# In one terminal, run the PHP server:
-php artisan serve
-
-# In another terminal, run the Vite asset bundler:
-npm run dev
-```
-
----
-*This README is a living document that will be updated as the project evolves.*
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
