@@ -14,7 +14,7 @@ class CampaignsController extends Controller
      */
     public function index()
     {
-        $campaigns = Auth::user()->tenant->campaigns;
+        $campaigns = Auth::user()->tenant->campaigns()->latest()->get();
         return view('campaigns.index', compact('campaigns'));
     }
 

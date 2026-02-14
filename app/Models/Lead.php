@@ -10,11 +10,11 @@ class Lead extends Model
 {
     use HasFactory, BelongsToTenant;
 
-    protected $fillable = ['name', 'email', 'phone', 'campaign_id'];
+    protected $fillable = ['name', 'email', 'phone', 'source'];
 
-    public function campaign()
+    public function campaigns()
     {
-        return $this->belongsTo(Campaign::class);
+        return $this->belongsToMany(Campaign::class);
     }
 
     public function campaignRuns()

@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LeadController;
+use App\Http\Controllers\LeadsController; // Changed from LeadController
 use App\Http\Controllers\ScraperController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PublicLeadCaptureController;
 use App\Http\Controllers\CampaignAutomationController;
 use App\Http\Controllers\CampaignsController;
 use App\Http\Controllers\CampaignStepController;
+use App\Http\Controllers\ScoringRuleController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\SegmentController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Tenant;
 use App\Models\User;
@@ -37,11 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Replaced individual lead routes with a resourceful route
-    Route::resource('leads', LeadController::class);
+    // Using the new LeadsController
+    Route::resource('leads', LeadsController::class);
+    Route::get('segments/{segment}', [SegmentController::class, 'show'])->name('segments.show');
 
     Route::resource('campaigns', CampaignsController::class);
     Route::resource('campaigns.steps', CampaignStepController::class)->shallow();
+
+    Route::resource('scoring-rules', ScoringRuleController::class);
 
     Route::get('/scraper', function () {
         return view('scraper');
@@ -50,6 +57,9 @@ Route::middleware('auth')->group(function () {
 
     // Campaign Automation
     Route::post('/campaigns/{campaign}/start', [CampaignAutomationController::class, 'start'])->name('campaigns.start');
+
+    // Analytics
+    Route::get('analytics/lead-score-distribution', [AnalyticsController::class, 'showLeadScoreDistribution'])->name('analytics.lead-score-distribution');
 });
 
 // Admin Routes
@@ -58,8 +68,9 @@ Route::post('admin/login', [AdminController::class, 'doLogin']);
 Route::post('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-    Route::delete('/leads/{lead}', [AdminController::class, 'destroy'])->name('leads.destroy');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Note: The admin destroy route for leads will need to be updated if you keep it
+    // Route::delete('/leads/{lead}', [AdminController::class, 'destroy'])->name('leads.destroy');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('billing')->as('subscriptions.')->group(function () {

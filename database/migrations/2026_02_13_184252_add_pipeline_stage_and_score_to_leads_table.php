@@ -29,7 +29,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('leads', function (Blueprint $table) {
-            $table->dropForeign(['pipeline_stage_id']);
+            // $table->dropForeign(['pipeline_stage_id']); // Removed for SQLite compatibility
             $table->dropColumn(['pipeline_stage_id', 'score']);
         });
     }

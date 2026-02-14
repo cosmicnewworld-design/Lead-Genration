@@ -1,89 +1,53 @@
-# Enterprise SaaS Lead & Outreach Platform
+# Laravel Marketing & Sales Automation Platform
 
-A production-ready, multi-tenant SaaS platform for lead generation and outreach, built on the Laravel framework.
-
-## Project Vision
-
-To transform a basic Laravel lead generation application into a fully advanced, production-ready, multi-tenant SaaS platform. The platform will follow enterprise-grade architecture principles, ensuring scalability, security, and maintainability.
-
-## Features
-
-This project is being developed in phases. Here's a summary of the planned and implemented features:
-
-### Core SaaS Foundation (Complete)
-
-*   **Multi-Tenant Architecture:** Secure, scalable, and isolated tenant environments using a multi-database approach with `stancl/tenancy`.
-*   **Role-Based Access Control (RBAC):** Granular permission system powered by `spatie/laravel-permission`, with predefined roles like `Tenant Admin`, `Sales Manager`, and `Sales Agent`.
-*   **Activity Logs:** Comprehensive audit trails for tracking all model changes, using `spatie/laravel-activitylog`.
-
-### SaaS Monetization (In Progress)
-
-*   **Stripe Integration:** Seamless subscription and billing management using `laravel/cashier`.
-*   **Subscription Plans:** Flexible plans (e.g., Free, Pro) to cater to different customer needs.
-*   **Usage-Based Billing:** Metered billing for resource consumption (e.g., leads, emails).
-
-### Advanced Lead Management (Planned)
-
-*   **Lead Scoring & Tagging:** Prioritize and organize leads for better follow-up.
-*   **Bulk Import/Export:** Easily manage large volumes of lead data.
-*   **Kanban-style Pipeline:** Visualize and manage the sales process.
-
-### Outreach & Automation (Planned)
-
-*   **Drip Email Campaigns:** Automated email sequences to nurture leads.
-*   **Email Templates:** Customizable templates with dynamic variables.
-*   **Performance Tracking:** Monitor email open and click rates.
+This is a full-stack web application built with the Laravel framework. It's designed to be a powerful, yet easy-to-use platform for managing marketing campaigns, leads, and sales pipelines.
 
 ## Getting Started
 
-### Prerequisites
+### 1. Installation
 
-*   PHP 8.1+
-*   Composer
-*   Node.js & NPM
-*   A database server (e.g., MySQL, PostgreSQL)
+*   **Dependencies:** The project uses Composer for PHP dependencies and NPM for frontend assets. Make sure you have both installed.
+*   **Environment:**
+    1.  Copy the `.env.example` file to a new file named `.env`.
+    2.  Run `php artisan key:generate` to generate a unique application key.
+*   **Database:**
+    1.  The project is configured to use SQLite by default. A `database/database.sqlite` file will be automatically created.
+    2.  Run `php artisan migrate` to create all the necessary database tables.
+*   **Serve:**
+    1.  Run `npm install` to install frontend dependencies.
+    2.  Run `npm run dev` to start the Vite development server.
+    3.  In a separate terminal, run `php artisan serve` to start the Laravel development server.
 
-### Installation
+### 2. Implemented Features
 
-1.  **Clone the repository:**
+#### Campaigns Management
 
+*   You can create, view, edit, and delete marketing campaigns.
+*   Navigate to the "Campaigns" section from the main dashboard to manage your campaigns.
+
+### 3. How to Add a New Feature (Example: "Tasks")
+
+1.  **Create a Model & Migration:**
     ```bash
-    git clone https://github.com/cosmicnewworld-design/Lead-Genration.git
-    cd lead-generation-saas
+    php artisan make:model Task -m
     ```
-
-2.  **Install dependencies:**
-
+2.  **Define the Schema:** In the newly created migration file (in `database/migrations`), define the columns for your `tasks` table (e.g., `title`, `description`, `due_date`).
+3.  **Run the Migration:**
     ```bash
-    composer install
-    npm install
+    php artisan migrate
     ```
-
-3.  **Set up your environment:**
-
-    *   Copy the `.env.example` file to `.env`.
-    *   Configure your database and Stripe API keys in the `.env` file.
-
-4.  **Run database migrations and seeders:**
-
+4.  **Create a Controller:**
     ```bash
-    php artisan migrate --seed
+    php artisan make:controller TaskController --resource
     ```
-
-5.  **Start the development servers:**
-
-    ```bash
-    # In one terminal
-    php artisan serve
-
-    # In another terminal
-    npm run dev
+5.  **Define Routes:** In `routes/web.php`, add a new resource route:
+    ```php
+    Route::resource('tasks', TaskController::class);
     ```
+6.  **Create Views:** Create the necessary Blade views (e.g., `index.blade.php`, `create.blade.php`, `edit.blade.php`) in the `resources/views/tasks` directory.
+7.  **Add Navigation Link:** Add a link to the `navigation.blade.php` file to access the new "Tasks" section.
 
-## Project Status
+## Troubleshooting
 
-The project is currently in **active development**. The core multi-tenant foundation and role-based access control are complete. The subscription and billing system is currently being implemented.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a pull request or open an issue.
+*   **"Command Hangs" Issue:** If `php artisan` commands are not responding, it's likely a database connection issue. Double-check your `.env` file for the correct database credentials.
+*   **404 Errors:** If you're getting 404 errors, make sure the routes are defined correctly in `routes/web.php` and that the corresponding controller methods and views exist.

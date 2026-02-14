@@ -24,7 +24,7 @@ class Campaign extends Model
 
     public function leads()
     {
-        return $this->hasMany(Lead::class);
+        return $this->belongsToMany(Lead::class);
     }
 
     public function steps()

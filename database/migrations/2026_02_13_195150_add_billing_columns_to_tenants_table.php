@@ -29,6 +29,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('tenants', function (Blueprint $table) {
+            // Drop the index before dropping the column for SQLite compatibility
+            $table->dropIndex('tenants_stripe_id_index');
             $table->dropColumn([
                 'stripe_id',
                 'pm_type',

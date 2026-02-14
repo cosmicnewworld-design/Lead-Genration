@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class, // Call the new PlanSeeder
             RolesAndPermissionsSeeder::class,
             TenantSeeder::class, // This should come after roles seeder to ensure roles are available for tenants
+            ScoringRuleSeeder::class, // Add this line
         ]);
     }
 }
