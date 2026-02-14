@@ -3,26 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Lead;
+use Laravel\Cashier\Http\Controllers\WebhookController as CashierWebhookController;
 
-class WebhookController extends Controller
+class WebhookController extends CashierWebhookController
 {
-    public function handleWhatsApp(Request $request)
+    /**
+     * Handle a Stripe webhook call.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handleWebhook(Request $request)
     {
-        $payload = $request->all();
+        $payload = json_decode($request->getContent(), true);
+        $method = 'handle' . studly_case(str_replace('.', '_', $payload['type']));
 
-        // Extract relevant data from the webhook payload
-        // This will vary depending on the WhatsApp provider
-        $phoneNumber = $payload['entry'][0]['changes'][0]['value']['messages'][0]['from'];
-        $status = $payload['entry'][0]['changes'][0]['value']['statuses'][0]['status'];
-
-        // Find the lead by phone number and update the status
-        $lead = Lead::where('phone', $phoneNumber)->first();
-        if ($lead) {
-            $lead->whatsapp_status = $status;
-            $lead->save();
+        if (method_exists($this, $method)) {
+            return $this->{$method}($payload);
         }
 
-        return response()->json(['status' => 'success']);
+        return $this->missingMethod();
     }
 }

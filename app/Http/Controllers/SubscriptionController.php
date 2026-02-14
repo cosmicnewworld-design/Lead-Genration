@@ -2,45 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Plan;
 
 class SubscriptionController extends Controller
 {
-    protected $subscriptionService;
-
-    public function __construct(SubscriptionService $subscriptionService)
+    public function checkout(Request $request, $plan)
     {
-        $this->subscriptionService = $subscriptionService;
-    }
+        $plan = Plan::where('slug', $plan)->firstOrFail();
+        $user = $request->user();
 
-    public function index()
-    {
-        $data = $this->subscriptionService->getSubscriptionData(Auth::user());
-        return view('billing.index', $data);
-    }
+        $checkout = $user->newSubscription($plan->name, $plan->stripe_plan_id)
+            ->checkout([
+                'success_url' => route('dashboard'),
+                'cancel_url' => route('billing.index'),
+            ]);
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'plan' => 'required|string',
-            'payment_method' => 'required|string',
+        return view('checkout.index', [
+            'checkout' => $checkout,
+            'stripe_key' => config('cashier.key')
         ]);
-
-        $this->subscriptionService->createSubscription(
-            Auth::user(),
-            $request->plan,
-            $request->payment_method
-        );
-
-        return redirect()->route('subscriptions.index')->with('success', 'Subscription created successfully.');
-    }
-
-    public function cancel()
-    {
-        $this->subscriptionService->cancelSubscription(Auth::user());
-
-        return redirect()->route('subscriptions.index')->with('success', 'Subscription cancelled successfully.');
     }
 }
