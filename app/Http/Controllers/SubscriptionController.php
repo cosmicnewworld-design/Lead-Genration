@@ -2,49 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Plan;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
+    protected $subscriptionService;
+
+    public function __construct(SubscriptionService $subscriptionService)
+    {
+        $this->subscriptionService = $subscriptionService;
+    }
+
     public function index()
     {
-        $tenant = auth()->user()->tenant;
-        $plans = Plan::all();
-        $currentPlan = $tenant->subscription('default') ?
-            Plan::where('stripe_price_id', $tenant->subscription('default')->stripe_price)->first() :
-            null;
-
-        return view('billing.index', [
-            'plans' => $plans,
-            'currentPlan' => $currentPlan,
-            'intent' => $tenant->createSetupIntent(),
-        ]);
+        $data = $this->subscriptionService->getSubscriptionData(Auth::user());
+        return view('billing.index', $data);
     }
 
-    public function subscribe(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'plan' => ['required', 'string', 'exists:plans,slug'],
-            'payment_method' => ['required', 'string'],
+            'plan' => 'required|string',
+            'payment_method' => 'required|string',
         ]);
 
-        $tenant = auth()->user()->tenant;
-        $plan = Plan::where('slug', $request->plan)->firstOrFail();
+        $this->subscriptionService->createSubscription(
+            Auth::user(),
+            $request->plan,
+            $request->payment_method
+        );
 
-        $tenant->newSubscription('default', $plan->stripe_price_id)
-            ->create($request->payment_method);
-
-        return redirect()->route('billing.index')->with('success', 'Subscription successful!');
+        return redirect()->route('subscriptions.index')->with('success', 'Subscription created successfully.');
     }
 
-    public function swap(Request $request)
+    public function cancel()
     {
-        // Logic for swapping plans (upgrade/downgrade)
-    }
+        $this->subscriptionService->cancelSubscription(Auth::user());
 
-    public function cancel(Request $request)
-    {
-        // Logic for cancelling subscription
+        return redirect()->route('subscriptions.index')->with('success', 'Subscription cancelled successfully.');
     }
 }

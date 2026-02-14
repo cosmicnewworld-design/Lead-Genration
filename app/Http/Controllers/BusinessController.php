@@ -3,34 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Services\BusinessService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OutreachEmail;
-use App\Http\Controllers\AiController;
 
 class BusinessController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $businessService;
+
+    public function __construct(BusinessService $businessService)
+    {
+        $this->businessService = $businessService;
+    }
+
     public function index()
     {
-        $businesses = Business::latest()->paginate(5);
+        $businesses = $this->businessService->getAllBusinesses();
         return view('businesses.index', compact('businesses'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('businesses.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -41,37 +37,23 @@ class BusinessController extends Controller
             'target_audience' => 'required',
         ]);
 
-        $business = new Business($request->all());
-        $business->tenant_id = config('tenant.id');
-        $business->save();
+        $this->businessService->createBusiness($request->all());
 
         return redirect()->route('businesses.index')
             ->with('success', 'Business created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Business $business)
+    public function show($id)
     {
-        $business->load(['leads' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }]);
-    
+        $business = $this->businessService->getBusinessById($id);
         return view('businesses.show', compact('business'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Business $business)
     {
         return view('businesses.edit', compact('business'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Business $business)
     {
         $request->validate([
@@ -82,34 +64,25 @@ class BusinessController extends Controller
             'target_audience' => 'required',
         ]);
 
-        $business->update($request->all());
+        $this->businessService->updateBusiness($business, $request->all());
 
         return redirect()->route('businesses.index')
             ->with('success', 'Business updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Business $business)
     {
-        $business->delete();
+        $this->businessService->deleteBusiness($business);
 
         return redirect()->route('businesses.index')
             ->with('success', 'Business deleted successfully');
     }
 
-    /**
-     * Show the outreach page for the specified business.
-     */
     public function outreach(Business $business)
     {
         return view('businesses.outreach', compact('business'));
     }
 
-    /**
-     * Send outreach messages to leads.
-     */
     public function sendOutreach(Request $request, Business $business)
     {
         $request->validate([
@@ -117,16 +90,7 @@ class BusinessController extends Controller
             'message_template' => 'required|string',
         ]);
 
-        $leads = $business->leads;
-        $aiController = app(AiController::class);
-        $personalizedMessages = [];
-
-        foreach ($leads as $lead) {
-            $personalizedMessage = $aiController->personalizeMessage($request->message_template, $lead->scraped_data);
-            $personalizedMessages[] = ['body' => $personalizedMessage];
-            
-            Mail::to($lead->email)->send(new OutreachEmail($request->subject, $personalizedMessage));
-        }
+        $personalizedMessages = $this->businessService->sendOutreach($business, $request->subject, $request->message_template);
 
         return redirect()->route('businesses.outreach', $business)
                          ->with('personalized_messages', $personalizedMessages)

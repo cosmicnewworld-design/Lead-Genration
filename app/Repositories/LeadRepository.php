@@ -3,32 +3,44 @@
 namespace App\Repositories;
 
 use App\Models\Lead;
+use Illuminate\Support\Facades\Auth;
 
 class LeadRepository
 {
     public function getAll()
     {
-        return Lead::all();
+        // Global scope should handle tenant filtering
+        return Lead::latest()->get();
     }
 
-    public function find($id)
+    public function create(array $data): Lead
     {
-        return Lead::find($id);
-    }
-
-    public function create(array $data)
-    {
+        $data['tenant_id'] = Auth::user()->tenant_id;
+        if (Auth::user()->tenant->business) {
+            $data['business_id'] = Auth::user()->tenant->business->id;
+        }
+        
+        // The controller validates the data, so it should be safe for mass assignment
         return Lead::create($data);
     }
-
-    public function update(Lead $lead, array $data)
+    
+    public function update(Lead $lead, array $data): bool
     {
-        $lead->update($data);
-        return $lead;
+        return $lead->update($data);
     }
 
-    public function delete(Lead $lead)
+    public function attachToCampaign(Lead $lead, int $campaignId): void
     {
-        return $lead->delete();
+        $lead->campaigns()->syncWithoutDetaching([$campaignId]);
+    }
+
+    public function syncCampaign(Lead $lead, ?int $campaignId): void
+    {
+        $lead->campaigns()->sync($campaignId ? [$campaignId] : []);
+    }
+
+    public function delete(Lead $lead): void
+    {
+        $lead->delete();
     }
 }

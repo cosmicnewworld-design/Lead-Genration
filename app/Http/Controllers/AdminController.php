@@ -2,30 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    /**
-     * Display the admin dashboard.
-     */
-    public function index()
-    {
-        $leads = Lead::with('business')->latest()->paginate(10);
-        return view('admin.dashboard', compact('leads'));
-    }
-
-    /**
-     * Remove the specified lead from storage.
-     */
-    public function destroy(Lead $lead)
-    {
-        $lead->delete();
-        return redirect()->route('admin.dashboard')->with('success', 'Lead deleted successfully.');
-    }
-
     /**
      * Show the admin login form.
      */

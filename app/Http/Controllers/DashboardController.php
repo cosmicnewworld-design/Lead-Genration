@@ -2,26 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
-use App\Models\Lead;
-use Illuminate\Http\Request;
+use App\Services\DashboardService;
 
 class DashboardController extends Controller
 {
+    protected $dashboardService;
+
+    public function __construct(DashboardService $dashboardService)
+    {
+        $this->dashboardService = $dashboardService;
+    }
+
     public function index()
     {
-        $totalBusinesses = Business::count();
-        $totalLeads = Lead::count();
-        $verifiedLeads = Lead::where('status', 'verified')->count();
-        $outreachSent = Business::where('outreach_sent', true)->count();
-        $recentLeads = Lead::with('business')->latest()->take(5)->get();
-
-        return view('dashboard', compact(
-            'totalBusinesses',
-            'totalLeads',
-            'verifiedLeads',
-            'outreachSent',
-            'recentLeads'
-        ));
+        $data = $this->dashboardService->getDashboardData();
+        return view('dashboard', $data);
     }
 }

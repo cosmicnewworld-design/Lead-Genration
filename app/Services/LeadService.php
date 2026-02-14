@@ -2,16 +2,19 @@
 
 namespace App\Services;
 
-use App\Repositories\LeadRepository;
 use App\Models\Lead;
+use App\Repositories\LeadRepository;
+use Illuminate\Support\Facades\Auth;
 
 class LeadService
 {
     protected $leadRepository;
+    protected $scoringService;
 
-    public function __construct(LeadRepository $leadRepository)
+    public function __construct(LeadRepository $leadRepository, LeadScoringService $scoringService)
     {
         $this->leadRepository = $leadRepository;
+        $this->scoringService = $scoringService;
     }
 
     public function getAllLeads()
@@ -19,21 +22,56 @@ class LeadService
         return $this->leadRepository->getAll();
     }
 
-    public function createLead(array $data)
+    public function getLeadCreationData(): array
     {
-        // Add any business logic here before creating the lead
-        return $this->leadRepository->create($data);
+        return [
+            'campaigns' => Auth::user()->tenant->campaigns()->get(),
+        ];
     }
 
-    public function updateLead(Lead $lead, array $data)
+    public function createLead(array $data): Lead
     {
-        // Add any business logic here before updating the lead
-        return $this->leadRepository->update($lead, $data);
+        $lead = $this->leadRepository->create($data);
+
+        if (isset($data['campaign_id'])) {
+            $this->leadRepository->attachToCampaign($lead, $data['campaign_id']);
+        }
+
+        return $lead;
     }
 
-    public function deleteLead(Lead $lead)
+    public function getLeadDataForShow(Lead $lead): array
     {
-        // Add any business logic here before deleting the lead
-        return $this->leadRepository->delete($lead);
+        $scoringData = $this->scoringService->calculateScore($lead);
+        $lead->score = $scoringData['total_score'];
+
+        return [
+            'lead' => $lead,
+            'scoreBreakdown' => $scoringData['breakdown'],
+        ];
+    }
+
+    public function getLeadEditData(Lead $lead): array
+    {
+        return [
+            'lead' => $lead,
+            'campaigns' => Auth::user()->tenant->campaigns()->get(),
+        ];
+    }
+
+    public function updateLead(Lead $lead, array $data): bool
+    {
+        $updated = $this->leadRepository->update($lead, $data);
+
+        if ($updated && isset($data['campaign_id'])) {
+            $this->leadRepository->syncCampaign($lead, $data['campaign_id']);
+        }
+
+        return $updated;
+    }
+
+    public function deleteLead(Lead $lead): void
+    {
+        $this->leadRepository->delete($lead);
     }
 }

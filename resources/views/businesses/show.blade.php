@@ -1,89 +1,104 @@
-@extends('layouts.app')
 
-@section('content')
-    <div class="container mx-auto py-8">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-3xl font-bold">{{ $business->name }}</h1>
-            <a href="{{ route('businesses.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Back</a>
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ $business->name }}
+            </h2>
+            <a href="{{ route('businesses.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition duration-200">
+                Back to Businesses
+            </a>
         </div>
+    </x-slot>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <p class="text-gray-700"><strong>Description:</strong> {{ $business->description }}</p>
-                <p class="text-gray-700"><strong>WhatsApp Number:</strong> {{ $business->whatsapp_number }}</p>
-                <p class="text-gray-700"><strong>Contact Email:</strong> {{ $business->contact_email }}</p>
-                <p class="text-gray-700"><strong>Target Audience:</strong> {{ $business->target_audience }}</p>
-            </div>
-            <div class="flex justify-end items-center">
-                <a href="{{ route('businesses.outreach', $business->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start Outreach</a>
-                <a href="{{ route('leads.create', ['business_id' => $business->id]) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">Add New Lead</a>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Business Details</h3>
+                    <p class="text-gray-600 mb-4">{{ $business->description }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Contact Email</p>
+                            <p class="text-lg font-medium text-gray-800">{{ $business->contact_email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">WhatsApp Number</p>
+                            <p class="text-lg font-medium text-gray-800">{{ $business->whatsapp_number }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Target Audience</p>
+                            <p class="text-lg font-medium text-gray-800">{{ $business->target_audience }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-6 border-t border-gray-200 flex justify-end">
+                    <a href="{{ route('businesses.outreach', $business->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition duration-200 mr-2">Start Outreach</a>
+                    <a href="{{ route('leads.create', ['business_id' => $business->id]) }}" class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition duration-200">+ Add New Lead</a>
+                </div>
             </div>
         </div>
-
-        <hr class="my-8">
-
-        <h2 class="text-2xl font-bold mb-4">Leads</h2>
-
-        @if ($message = Session::get('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <span class="block sm:inline">{{ $message }}</span>
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">At a Glance</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <div class="bg-green-500 p-3 rounded-full text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.25-1.264-.7-1.732M7 20v-2c0-.653.25-1.264.7-1.732M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-1.105.895-2 2-2h6c1.105 0 2 .895 2 2v2M9 7h6m-6 4h6"></path></svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-500">Total Leads</p>
+                            <p class="text-2xl font-bold text-gray-800">{{ $business->leads->count() }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        @endif
+        </div>
+    </div>
 
-        <div class="bg-white shadow-md rounded my-6">
-            @if ($business->leads->count() > 0)
-                <table class="min-w-max w-full table-auto">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left">Name</th>
-                            <th class="py-3 px-6 text-left">Designation</th>
-                            <th class="py-3 px-6 text-center">Company Name</th>
-                            <th class="py-3 px-6 text-center">Status</th>
-                            <th class="py-3 px-6 text-center">Actions</th>
+    <div class="mt-6 bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Leads</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-600 text-sm font-light">
-                        @foreach ($business->leads as $lead)
-                            <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                <td class="py-3 px-6 text-left whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <span class="font-medium">{{ $lead->name }}</span>
-                                    </div>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse ($business->leads as $lead)
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $lead->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $lead->designation }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $lead->company_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $lead->status == 'Verified' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                        {{ $lead->status }}
+                                    </span>
                                 </td>
-                                <td class="py-3 px-6 text-left">
-                                    <div class="flex items-center">
-                                        <span>{{ $lead->designation }}</span>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-6 text-center">
-                                    <span>{{ $lead->company_name }}</span>
-                                </td>
-                                <td class="py-3 px-6 text-center">
-                                    <form action="{{ route('leads.update.status', $lead->id) }}" method="POST">
-                                        @csrf
-                                        <select name="status" class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs" onchange="this.form.submit()">
-                                            <option value="New" {{ $lead->status == 'New' ? 'selected' : '' }}>New</option>
-                                            <option value="Contacted" {{ $lead->status == 'Contacted' ? 'selected' : '' }}>Contacted</option>
-                                            <option value="Replied" {{ $lead->status == 'Replied' ? 'selected' : '' }}>Replied</option>
-                                        </select>
-                                    </form>
-                                </td>
-                                <td class="py-3 px-6 text-center">
-                                    <form action="{{ route('leads.destroy', $lead->id) }}" method="POST">
-                                        <a href="{{ route('leads.show', $lead->id) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Show</a>
-                                        <a href="{{ route('leads.edit', $lead->id) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">Edit</a>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{{ route('leads.show', $lead->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-4">View</a>
+                                    <a href="{{ route('leads.edit', $lead->id) }}" class="text-yellow-600 hover:text-yellow-900 mr-4">Edit</a>
+                                    <form action="{{ route('leads.destroy', $lead->id) }}" method="POST" class="inline-block">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                                        <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure?')">Delete</button>
                                     </form>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">No leads found for this business.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            @else
-                <p class="text-gray-700 p-6">No leads found for this business.</p>
-            @endif
+            </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

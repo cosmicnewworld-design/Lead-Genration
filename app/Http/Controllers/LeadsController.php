@@ -3,42 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
-use App\Models\Campaign;
-use App\Services\LeadScoringService;
+use App\Services\LeadService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LeadsController extends Controller
 {
-    protected $scoringService;
+    protected $leadService;
 
-    public function __construct(LeadScoringService $scoringService)
+    public function __construct(LeadService $leadService)
     {
-        $this->scoringService = $scoringService;
+        $this->leadService = $leadService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $leads = Auth::user()->tenant->leads()->latest()->get();
-
+        $leads = $this->leadService->getAllLeads();
         return view('leads.index', compact('leads'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $campaigns = Auth::user()->tenant->campaigns()->get();
-        return view('leads.create', compact('campaigns'));
+        $data = $this->leadService->getLeadCreationData();
+        return view('leads.create', $data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -48,55 +36,44 @@ class LeadsController extends Controller
             'source' => 'nullable|string|max:255',
         ]);
 
-        $lead = new Lead();
-        $lead->name = $request->name;
-        $lead->email = $request->email;
-        $lead->source = $request->source;
-        $lead->tenant_id = Auth::user()->tenant_id;
-        $lead->save();
-
-        if ($request->campaign_id) {
-            $lead->campaigns()->attach($request->campaign_id);
-        }
+        $this->leadService->createLead($request->all());
 
         return redirect()->route('leads.index')->with('success', 'Lead created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Lead $lead)
     {
-        $scoringData = $this->scoringService->calculateScore($lead);
-        $lead->score = $scoringData['total_score'];
-        $scoreBreakdown = $scoringData['breakdown'];
-
-        return view('leads.show', compact('lead', 'scoreBreakdown'));
+        $this->authorize('view', $lead);
+        $data = $this->leadService->getLeadDataForShow($lead);
+        return view('leads.show', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Lead $lead)
     {
-        //
+        $this->authorize('update', $lead);
+        $data = $this->leadService->getLeadEditData($lead);
+        return view('leads.edit', $data);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Lead $lead)
     {
-        //
+        $this->authorize('update', $lead);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'campaign_id' => 'nullable|exists:campaigns,id',
+            'source' => 'nullable|string|max:255',
+        ]);
+
+        $this->leadService->updateLead($lead, $request->all());
+
+        return redirect()->route('leads.index')->with('success', 'Lead updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Lead $lead)
     {
-        $lead->delete();
-
+        $this->authorize('delete', $lead);
+        $this->leadService->deleteLead($lead);
         return redirect()->route('leads.index')->with('success', 'Lead deleted successfully.');
     }
 }

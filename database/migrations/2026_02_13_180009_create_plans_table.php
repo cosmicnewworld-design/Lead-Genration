@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('stripe_plan_id')->unique();
             $table->decimal('price', 8, 2);
             $table->text('description')->nullable();
+            $table->integer('max_leads')->default(0);
+            $table->integer('max_campaigns')->default(0);
             $table->timestamps();
         });
     }

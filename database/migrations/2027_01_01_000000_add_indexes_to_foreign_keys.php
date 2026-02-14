@@ -31,7 +31,7 @@ return new class extends Migration
             $table->index('tag_id');
         });
 
-        Schema::table('activity_logs', function (Blueprint $table) {
+        Schema::table('activity_log', function (Blueprint $table) {
             $table->index('tenant_id');
             $table->index('lead_id');
             $table->index(['loggable_type', 'loggable_id']);
@@ -79,7 +79,7 @@ return new class extends Migration
             $table->dropIndex(['tag_id']);
         });
 
-        Schema::table('activity_logs', function (Blueprint $table) {
+        Schema::table('activity_log', function (Blueprint $table) {
             $table->dropIndex(['tenant_id']);
             $table->dropIndex(['lead_id']);
             $table->dropIndex(['loggable_type', 'loggable_id']);
