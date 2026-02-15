@@ -15,10 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            PlanSeeder::class, // Call the new PlanSeeder
-            RolesAndPermissionsSeeder::class,
-            TenantSeeder::class, // This should come after roles seeder to ensure roles are available for tenants
-            ScoringRuleSeeder::class, // Add this line
+            TenantSeeder::class,
+            UserSeeder::class,
+            LeadSeeder::class,
         ]);
     }
 }

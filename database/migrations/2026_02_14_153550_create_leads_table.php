@@ -15,11 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone_number')->nullable();
-            $table->string('linkedin_url')->nullable();
-            $table->json('socials')->nullable();
-            $table->string('status')->default('new')->index();
-            $table->foreignId('business_id')->constrained()->onDelete('cascade');
+            $table->string('status')->default('new');
+            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

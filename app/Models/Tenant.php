@@ -3,37 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Cashier\Billable;
-use Spatie\Multitenancy\Models\Tenant as BaseTenant;
+use Illuminate\Database\Eloquent\Model;
 
-class Tenant extends BaseTenant
+class Tenant extends Model
 {
-    use HasFactory, Billable;
+    use HasFactory;
 
-    protected $fillable = ['name', 'domain', 'stripe_id', 'pm_type', 'pm_last_four', 'trial_ends_at'];
+    protected $fillable = [
+        'name',
+    ];
 
     public function users()
     {
         return $this->hasMany(User::class);
     }
 
-    public function business()
-    {
-        return $this->hasOne(Business::class);
-    }
-
     public function leads()
     {
         return $this->hasMany(Lead::class);
-    }
-
-    public function campaigns()
-    {
-        return $this->hasMany(Campaign::class);
-    }
-
-    public function scoringRules()
-    {
-        return $this->hasMany(ScoringRule::class);
     }
 }

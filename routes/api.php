@@ -5,7 +5,7 @@ use App\Http\Controllers\AnalyticsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/leads', [LeadController::class, 'store']);
+Route::apiResource('leads', LeadController::class);
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();

@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use Laravel\Cashier\Billable; // Added for Stripe integration
 
 class User extends Authenticatable
 {
-    use Billable, HasApiTokens, HasFactory, Notifiable, HasRoles, BelongsToTenant;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
