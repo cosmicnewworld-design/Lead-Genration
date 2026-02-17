@@ -19,6 +19,6 @@ class TestApolloService extends Command
     public function handle()
     {
         $leads = $this->apolloService->searchLeads('Purchase Manager', 'Software');
-        $this->info(print_r($leads, true));
+        $this->info(json_encode($leads, JSON_PRETTY_PRINT));
     }
 }
