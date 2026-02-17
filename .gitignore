@@ -5,8 +5,75 @@
 /vendor
 .env
 .env.backup
+.env.local
+.env.*.local
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# IDE and editor config
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets & Credentials
+*.key
+*.pem
+*.pfx
+*.p12
+*.csr
+*.crt
+*.cer
+.ssh/
+secrets/
+credentials/
+*.gpg
+*.encrypt
+
+# Build & Dependency Files
+dist/
+build/
+.next/
+out/
+.nuxt/
+coverage/
+*.log
+lerna-debug.log
+
+# Database files
+*.sqlite
+*.db
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Laravel specific
+/bootstrap/cache/
+storage/debugbar/
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Firebase
+.firebaserc
+firebase-debug.log
+
+# Composer cache
+composer-home/cache/
