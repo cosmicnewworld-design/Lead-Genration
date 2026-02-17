@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('campaigns', function (Blueprint $table) {
-            $table->string('status')->default('draft')->after('description');
-            
-            $table->index(['tenant_id', 'status']);
+        Schema::create('campaign_lead', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('campaign_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lead_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -23,10 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropColumn([
-                'status',
-            ]);
-        });
+        Schema::dropIfExists('campaign_lead');
     }
 };

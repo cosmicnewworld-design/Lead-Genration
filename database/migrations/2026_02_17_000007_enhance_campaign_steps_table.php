@@ -13,11 +13,6 @@ return new class extends Migration
     {
         Schema::table('campaign_steps', function (Blueprint $table) {
             $table->string('type')->default('email')->after('campaign_id');
-            $table->integer('delay_in_hours')->nullable()->after('delay_in_days');
-            $table->integer('delay_in_minutes')->nullable()->after('delay_in_hours');
-            $table->json('settings')->nullable()->after('order');
-            $table->string('ab_test_variant')->nullable()->after('settings');
-            $table->boolean('is_active')->default(true)->after('ab_test_variant');
             
             $table->index(['campaign_id', 'order']);
         });
@@ -31,11 +26,6 @@ return new class extends Migration
         Schema::table('campaign_steps', function (Blueprint $table) {
             $table->dropColumn([
                 'type',
-                'delay_in_hours',
-                'delay_in_minutes',
-                'settings',
-                'ab_test_variant',
-                'is_active',
             ]);
         });
     }
