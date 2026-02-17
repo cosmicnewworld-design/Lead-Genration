@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Lead;
+use App\Models\LeadSource;
 use Illuminate\Support\Facades\Auth;
 
 class LeadRepository
@@ -18,6 +19,25 @@ class LeadRepository
         $data['tenant_id'] = Auth::user()->tenant_id;
         if (Auth::user()->tenant->business) {
             $data['business_id'] = Auth::user()->tenant->business->id;
+        }
+
+        // If lead_source_id is provided, copy a human readable label into `source`
+        if (!empty($data['lead_source_id'])) {
+            $leadSource = LeadSource::where('tenant_id', $data['tenant_id'])
+                ->where('id', $data['lead_source_id'])
+                ->first();
+            if ($leadSource) {
+                $data['source'] = $leadSource->name;
+            }
+        }
+
+        // De-dupe: if same email already exists for tenant, update it instead of creating a duplicate
+        if (!empty($data['email'])) {
+            $existing = Lead::where('tenant_id', $data['tenant_id'])->where('email', $data['email'])->first();
+            if ($existing) {
+                $existing->update($data);
+                return $existing;
+            }
         }
         
         // The controller validates the data, so it should be safe for mass assignment

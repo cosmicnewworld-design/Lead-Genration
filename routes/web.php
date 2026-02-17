@@ -36,8 +36,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::get('/capture/{tenant_slug}', [PublicLeadCaptureController::class, 'show'])->name('public.capture.show');
 Route::post('/capture/{tenant_slug}', [PublicLeadCaptureController::class, 'store'])->name('public.capture.store');
 
-Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
-Route::get('/checkout/{plan}', [SubscriptionController::class, 'checkout'])->name('checkout');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::get('/checkout/{plan}', [SubscriptionController::class, 'checkout'])->name('checkout');
+    Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::post('/subscriptions/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
+    Route::post('/subscriptions/resume', [SubscriptionController::class, 'resume'])->name('subscriptions.resume');
+    Route::get('/subscriptions/portal', [SubscriptionController::class, 'portal'])->name('subscriptions.portal');
+});
+
 Route::post('stripe/webhook', [WebhookController::class, 'handleWebhook'])->name('cashier.webhook');
 
 require __DIR__.'/auth.php';

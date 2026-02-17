@@ -21,7 +21,18 @@
                         </div>
                         <div class="mb-4">
                             <label for="source" class="block text-sm font-medium text-gray-700">Source</label>
-                            <input type="text" name="source" id="source" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <select name="lead_source_id" id="lead_source_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="">Select source</option>
+                                @foreach ($leadSources as $categoryName => $sources)
+                                    <optgroup label="{{ $categoryName }}">
+                                        @foreach ($sources as $src)
+                                            <option value="{{ $src->id }}">{{ $src->name }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Optional: agar custom source likhna ho to niche likh sakte ho.</p>
+                            <input type="text" name="source" id="source" placeholder="Custom source (optional)" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         </div>
                         <div class="mb-4">
                             <label for="campaign_id" class="block text-sm font-medium text-gray-700">Campaign</label>

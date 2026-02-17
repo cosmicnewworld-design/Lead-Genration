@@ -16,6 +16,16 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.28-1.25-.743-1.674M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.28-1.25.743-1.674M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 0c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"></path></svg>
                 <span class="mx-4 font-medium">Leads</span>
             </a>
+
+            <a class="flex items-center px-4 py-2 mt-2 text-gray-100 rounded-md hover:bg-gray-700" href="{{ route('leads.import') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16M8 12l4 4 8-8"></path></svg>
+                <span class="mx-4 font-medium">Import Leads</span>
+            </a>
+
+            <a class="flex items-center px-4 py-2 mt-2 text-gray-100 rounded-md hover:bg-gray-700" href="{{ route('settings.lead-source-categories.index') }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <span class="mx-4 font-medium">Lead Sources</span>
+            </a>
             
             <a class="flex items-center px-4 py-2 mt-5 text-gray-100 rounded-md hover:bg-gray-700" href="{{ route('campaigns.index') }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>

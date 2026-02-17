@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Lead;
+use App\Models\LeadSource;
 use App\Repositories\LeadRepository;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +27,13 @@ class LeadService
     {
         return [
             'campaigns' => Auth::user()->tenant->campaigns()->get(),
+            'leadSources' => LeadSource::where('tenant_id', Auth::user()->tenant_id)
+                ->where('is_active', true)
+                ->with(['category'])
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(fn ($s) => $s->category?->name ?? 'Uncategorized'),
         ];
     }
 
@@ -56,6 +64,13 @@ class LeadService
         return [
             'lead' => $lead,
             'campaigns' => Auth::user()->tenant->campaigns()->get(),
+            'leadSources' => LeadSource::where('tenant_id', Auth::user()->tenant_id)
+                ->where('is_active', true)
+                ->with(['category'])
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(fn ($s) => $s->category?->name ?? 'Uncategorized'),
         ];
     }
 

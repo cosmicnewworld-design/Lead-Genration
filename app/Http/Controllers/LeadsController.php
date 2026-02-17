@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
+use App\Models\LeadSource;
+use App\Services\LeadImportService;
 use App\Services\LeadService;
 use Illuminate\Http\Request;
 
 class LeadsController extends Controller
 {
     protected $leadService;
+    protected $leadImportService;
 
-    public function __construct(LeadService $leadService)
+    public function __construct(LeadService $leadService, LeadImportService $leadImportService)
     {
         $this->leadService = $leadService;
+        $this->leadImportService = $leadImportService;
     }
 
     public function index()
@@ -27,6 +31,37 @@ class LeadsController extends Controller
         return view('leads.create', $data);
     }
 
+    public function import()
+    {
+        $data = $this->leadService->getLeadCreationData();
+        return view('leads.import', $data);
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:20480',
+            'lead_source_id' => 'nullable|exists:lead_sources,id',
+            'source' => 'nullable|string|max:255',
+        ]);
+
+        $defaults = [];
+        if ($request->filled('lead_source_id')) {
+            $defaults['lead_source_id'] = (int) $request->lead_source_id;
+        }
+        if ($request->filled('source')) {
+            $defaults['source'] = (string) $request->source;
+        } elseif ($request->filled('lead_source_id')) {
+            $defaults['source'] = LeadSource::where('id', $request->lead_source_id)->value('name');
+        }
+
+        $result = $this->leadImportService->importCsv($request->file('file'), $defaults);
+
+        return redirect()
+            ->route('leads.index')
+            ->with('success', "CSV import done. Imported: {$result['imported']}, Skipped: {$result['skipped']}");
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -34,6 +69,7 @@ class LeadsController extends Controller
             'email' => 'required|email|max:255',
             'campaign_id' => 'nullable|exists:campaigns,id',
             'source' => 'nullable|string|max:255',
+            'lead_source_id' => 'nullable|exists:lead_sources,id',
         ]);
 
         $this->leadService->createLead($request->all());
@@ -63,6 +99,7 @@ class LeadsController extends Controller
             'email' => 'required|email|max:255',
             'campaign_id' => 'nullable|exists:campaigns,id',
             'source' => 'nullable|string|max:255',
+            'lead_source_id' => 'nullable|exists:lead_sources,id',
         ]);
 
         $this->leadService->updateLead($lead, $request->all());

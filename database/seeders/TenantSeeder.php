@@ -14,6 +14,6 @@ class TenantSeeder extends Seeder
      */
     public function run()
     {
-        Tenant::create(['name' => 'Acme Inc.']);
+        Tenant::create(['name' => 'Acme Inc.', 'slug' => 'acme']);
     }
 }
