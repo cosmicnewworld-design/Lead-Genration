@@ -19,9 +19,10 @@ class LeadsController extends Controller
         $this->leadImportService = $leadImportService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $leads = $this->leadService->getAllLeads();
+        $searchTerm = $request->input('search');
+        $leads = $this->leadService->getAllLeads($searchTerm);
         return view('leads.index', compact('leads'));
     }
 

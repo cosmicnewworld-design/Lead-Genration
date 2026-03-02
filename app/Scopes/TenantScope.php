@@ -2,19 +2,17 @@
 
 namespace App\Scopes;
 
-use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Multitenancy\Contracts\CurrentTenant;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class TenantScope implements Scope
 {
     public function apply(Builder $builder, Model $model)
     {
-        $currentTenant = app(CurrentTenant::class);
-
-        if ($currentTenant->check()) {
-            $builder->where($model->qualifyColumn('tenant_id'), $currentTenant->getId());
+        if (Auth::check() && Auth::user()->tenant_id) {
+            $builder->where($model->getTable() . '.tenant_id', Auth::user()->tenant_id);
         }
     }
 }

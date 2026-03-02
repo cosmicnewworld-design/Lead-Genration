@@ -1,48 +1,80 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Billing') }}
+        </h2>
+    </x-slot>
 
-    <title>Billing</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-</head>
-<body class="antialiased">
-    <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-3">
-                    @foreach ($plans as $plan)
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <div class="ml-4 text-lg leading-7 font-semibold"><a href="#" class="underline text-gray-900 dark:text-white">{{ $plan->name }}</a></div>
-                            </div>
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
-                            <div class="ml-12">
-                                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                                    {{ $plan->description }}
-                                </div>
+                    @if (session('success'))
+                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                            <p>{{ session('success') }}</p>
+                        </div>
+                    @endif
 
-                                <div class="mt-3 flex items-center text-sm font-semibold text-indigo-700">
-                                    <div>${{ $plan->price }}/month</div>
-                                </div>
+                    @if (session('error'))
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    @endif
 
-                                <div class="mt-4">
-                                    <a href="{{ route('checkout', ['plan' => $plan->slug]) }}" class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-md">Subscribe</a>
-                                </div>
+                    @if ($currentSubscription)
+                        <div class="text-center">
+                            <h1 class="text-4xl font-bold text-gray-800">Your Current Plan</h1>
+                            <p class="text-gray-600 mt-2">You are currently subscribed to the {{ $currentSubscription->name }} plan.</p>
+
+                            <div class="mt-8">
+                                @if ($currentSubscription->onGracePeriod())
+                                    <p class="text-yellow-600">Your subscription is in a grace period and will end on {{ $currentSubscription->ends_at->format('F j, Y') }}.</p>
+                                    <form action="{{ route('subscriptions.resume') }}" method="POST" class="mt-4">
+                                        @csrf
+                                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                            Resume Subscription
+                                        </button>
+                                    </form>
+                                @elseif ($currentSubscription->active())
+                                    <p class="text-green-600">Your subscription is active.</p>
+                                    <form action="{{ route('subscriptions.cancel') }}" method="POST" class="mt-4">
+                                        @csrf
+                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                            Cancel Subscription
+                                        </button>
+                                    </form>
+                                @endif
+                                <a href="{{ route('subscriptions.portal') }}" class="mt-4 inline-block text-indigo-600 hover:text-indigo-900">
+                                    Access Billing Portal
+                                </a>
                             </div>
                         </div>
-                    @endforeach
+                    @else
+                        <div class="text-center">
+                            <h1 class="text-4xl font-bold text-gray-800">Our Pricing Plans</h1>
+                            <p class="text-gray-600 mt-2">Choose the plan that's right for your business.</p>
+                        </div>
+
+                        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                            @foreach ($plans as $plan)
+                                <div class="bg-gray-50 p-8 rounded-lg shadow-md">
+                                    <h2 class="text-2xl font-bold text-gray-800">{{ $plan->name }}</h2>
+                                    <p class="text-gray-600 mt-2">{{ $plan->description }}</p>
+                                    <div class="mt-6">
+                                        <span class="text-4xl font-bold">${{ $plan->price }}</span>
+                                        <span class="text-gray-600">/ month</span>
+                                    </div>
+                                    <a href="{{ route('billing.checkout', $plan->slug) }}" class="mt-8 block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center font-bold py-2 px-4 rounded">
+                                        Subscribe
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</x-app-layout>

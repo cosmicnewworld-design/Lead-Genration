@@ -1,23 +1,22 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Create New Scoring Rule') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-    <div class="container">
-        <h1>Add Scoring Rule</h1>
-        <form action="{{ route('scoring-rules.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="field">Field</label>
-                <input type="text" name="field" id="field" class="form-control">
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    @include('scoring-rules._form', [
+                        'action' => route('scoring-rules.store'),
+                        'method' => 'POST',
+                        'rule' => new \App\Models\ScoringRule(),
+                        'buttonLabel' => __('Create Rule')
+                    ])
+                </div>
             </div>
-            <div class="form-group">
-                <label for="value">Value</label>
-                <input type="text" name="value" id="value" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="points">Points</label>
-                <input type="number" name="points" id="points" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Add Rule</button>
-        </form>
+        </div>
     </div>
-@endsection
+</x-app-layout>

@@ -5,56 +5,31 @@ namespace App\Http\Controllers;
 use App\Models\Lead;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Validator;
 
 class PublicLeadCaptureController extends Controller
 {
-    /**
-     * Display the public lead capture form.
-     *
-     * @param  string  $slug
-     * @return \Illuminate\View\View
-     */
-    public function show($slug)
+    public function show($tenant_slug)
     {
-        $tenant = Tenant::where('slug', $slug)->firstOrFail();
-        return view('public.capture', compact('tenant'));
+        $tenant = Tenant::where('slug', $tenant_slug)->firstOrFail();
+        return view('public.capture', ['tenant_slug' => $tenant->slug]);
     }
 
-    /**
-     * Store a newly created lead from the public form.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request, $slug)
+    public function store(Request $request, $tenant_slug)
     {
-        $tenant = Tenant::where('slug', $slug)->firstOrFail();
+        $tenant = Tenant::where('slug', $tenant_slug)->firstOrFail();
 
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('leads')->where(function ($query) use ($tenant) {
-                    return $query->where('tenant_id', $tenant->id);
-                }),
-            ],
+            'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $lead = new Lead();
-        $lead->fill($validator->validated());
+        $lead = new Lead($validatedData);
         $lead->tenant_id = $tenant->id;
-        $lead->status = 'new';
         $lead->save();
 
-        return redirect()->back()->with('success', 'Thank you for your submission!');
+        return back()->with('success', 'Thank you! Your information has been submitted successfully.');
     }
 }

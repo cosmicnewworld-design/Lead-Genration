@@ -1,49 +1,52 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create Lead') }}
+            {{ __('Create New Lead') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('leads.store') }}" method="POST">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <form method="POST" action="{{ route('leads.store') }}">
                         @csrf
+
+                        <!-- Name -->
                         <div class="mb-4">
                             <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                            <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <input type="text" name="name" id="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                         </div>
+
+                        <!-- Email -->
                         <div class="mb-4">
                             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" name="email" id="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <input type="email" name="email" id="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                         </div>
+
+                        <!-- Phone -->
                         <div class="mb-4">
-                            <label for="source" class="block text-sm font-medium text-gray-700">Source</label>
-                            <select name="lead_source_id" id="lead_source_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Select source</option>
-                                @foreach ($leadSources as $categoryName => $sources)
-                                    <optgroup label="{{ $categoryName }}">
-                                        @foreach ($sources as $src)
-                                            <option value="{{ $src->id }}">{{ $src->name }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
-                            </select>
-                            <p class="mt-1 text-xs text-gray-500">Optional: agar custom source likhna ho to niche likh sakte ho.</p>
-                            <input type="text" name="source" id="source" placeholder="Custom source (optional)" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                            <input type="text" name="phone" id="phone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
+
+                        <!-- Company -->
                         <div class="mb-4">
-                            <label for="campaign_id" class="block text-sm font-medium text-gray-700">Campaign</label>
-                            <select name="campaign_id" id="campaign_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="">Select a campaign</option>
-                                @foreach ($campaigns as $campaign)
-                                    <option value="{{ $campaign->id }}">{{ $campaign->name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="company" class="block text-sm font-medium text-gray-700">Company</label>
+                            <input type="text" name="company" id="company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
-                        <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Create</button>
+
+                        <!-- Job Title -->
+                        <div class="mb-4">
+                            <label for="job_title" class="block text-sm font-medium text-gray-700">Job Title</label>
+                            <input type="text" name="job_title" id="job_title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
+
+                        <div class="flex items-center justify-end mt-4">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Save Lead
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

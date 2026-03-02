@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -9,45 +8,29 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <style>
-            .icon-gray {
-                filter: grayscale(100%);
-            }
-        </style>
     </head>
     <body class="font-sans antialiased">
-        <div class="flex h-screen bg-gray-100">
-            <!-- Sidebar -->
-            @include('layouts.sidebar')
+        <div class="min-h-screen bg-gray-100">
+            @include('layouts.navigation')
 
-            <div class="flex-1 flex flex-col overflow-hidden">
-                <!-- Navbar -->
-                @include('layouts.navigation')
-
-                <!-- Page Content -->
-                <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
-                    <div class="container mx-auto px-6 py-8">
-                        <!-- Page Heading -->
-                        @if (isset($header))
-                        <header class="bg-white shadow-md rounded-lg mb-8">
-                            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                                <h1 class="text-3xl font-bold text-gray-800">
-                                    {{ $header }}
-                                </h1>
-                            </div>
-                        </header>
-                        @endif
-                        
-                        {{ $slot }}
+            <!-- Page Heading -->
+            @if (isset($header))
+                <header class="bg-white shadow">
+                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {{ $header }}
                     </div>
-                </main>
-            </div>
+                </header>
+            @endif
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
         </div>
+        @stack('scripts')
     </body>
 </html>

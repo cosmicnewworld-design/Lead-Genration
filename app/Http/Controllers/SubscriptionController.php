@@ -24,44 +24,14 @@ class SubscriptionController extends Controller
 
     public function checkout(Request $request, $plan)
     {
-        try {
-            $plan = Plan::where('slug', $plan)->where('is_active', true)->firstOrFail();
-            $user = $request->user();
+        $plan = Plan::where('slug', $plan)->firstOrFail();
+        $user = $request->user();
 
-            // Check if user already has an active subscription
-            if ($user->subscribed('default')) {
-                return redirect()->route('billing.index')
-                    ->with('error', 'You already have an active subscription. Please cancel it first to change plans.');
-            }
-
-            $stripePriceId = $plan->stripe_price_id ?? $plan->stripe_plan_id;
-
-            if (!$stripePriceId) {
-                return redirect()->route('billing.index')
-                    ->with('error', 'This plan is not configured for checkout. Please contact support.');
-            }
-
-            $checkout = $user->newSubscription($plan->name, $stripePriceId)
-                ->checkout([
-                    'success_url' => route('dashboard') . '?checkout=success',
-                    'cancel_url' => route('billing.index') . '?checkout=cancelled',
-                    'metadata' => [
-                        'plan_id' => $plan->id,
-                        'plan_name' => $plan->name,
-                    ],
-                ]);
-
-            return redirect($checkout->url);
-        } catch (\Exception $e) {
-            Log::error('Checkout error', [
-                'error' => $e->getMessage(),
-                'plan' => $plan ?? null,
-                'user_id' => $request->user()->id ?? null,
+        return $user->newSubscription($plan->name, $plan->stripe_plan)
+            ->checkout([
+                'success_url' => route('dashboard') . '?checkout=success',
+                'cancel_url' => route('billing.index') . '?checkout=cancelled',
             ]);
-
-            return redirect()->route('billing.index')
-                ->with('error', 'An error occurred while processing your checkout. Please try again.');
-        }
     }
 
     public function store(Request $request)

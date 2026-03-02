@@ -5,13 +5,23 @@ namespace App\Repositories;
 use App\Models\Lead;
 use App\Models\LeadSource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class LeadRepository
 {
-    public function getAll()
+    public function getAll(string $searchTerm = null): LengthAwarePaginator
     {
         // Global scope should handle tenant filtering
-        return Lead::latest()->get();
+        $query = Lead::latest();
+
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('email', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        return $query->paginate(15); // Paginate with 15 items per page
     }
 
     public function create(array $data): Lead

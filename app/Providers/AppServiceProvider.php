@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Lead::observe(LeadObserver::class);
         ScoringRule::observe(ScoringRuleObserver::class);
+        Lead::observe(LeadObserver::class);
     }
 }

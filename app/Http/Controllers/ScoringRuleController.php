@@ -3,70 +3,128 @@
 namespace App\Http\Controllers;
 
 use App\Models\ScoringRule;
-use App\Services\ScoringRuleService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ScoringRuleController extends Controller
 {
-    protected $scoringRuleService;
+    /**
+     * A list of available operators for the scoring rules.
+     *
+     * @var array
+     */
+    private $operators = [
+        'equals' => 'Equals',
+        'not_equals' => 'Not Equals',
+        'contains' => 'Contains',
+        'not_contains' => 'Does Not Contain',
+        'is_filled' => 'Is Filled',
+        'is_not_filled' => 'Is Not Filled',
+        'greater_than' => 'Greater Than',
+        'less_than' => 'Less Than',
+    ];
 
-    public function __construct(ScoringRuleService $scoringRuleService)
-    {
-        $this->scoringRuleService = $scoringRuleService;
-    }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        $rules = $this->scoringRuleService->getRules();
-        return view('scoring-rules.index', compact('rules'));
+        // The BelongsToTenant trait will automatically scope this query
+        $rules = ScoringRule::latest()->get();
+        return view('scoring_rules.index', ['rules' => $rules]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        return view('scoring-rules.create');
+        return view('scoring_rules.create', [
+            'rule' => new ScoringRule(),
+            'operators' => $this->operators
+        ]);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'field' => 'required|string',
-            'value' => 'required|string',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'condition_field' => 'required|string|max:255',
+            'operator' => ['required', Rule::in(array_keys($this->operators))],
+            'condition_value' => 'nullable|string|max:255',
             'points' => 'required|integer',
         ]);
 
-        $this->scoringRuleService->createRule($request->all());
+        // The BelongsToTenant trait will automatically add the tenant_id
+        ScoringRule::create($validatedData);
 
         return redirect()->route('scoring-rules.index')
             ->with('success', 'Scoring rule created successfully.');
     }
 
-    public function show(ScoringRule $scoringRule)
-    {
-        return view('scoring-rules.show', compact('scoringRule'));
-    }
-
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\ScoringRule  $scoringRule
+     * @return \Illuminate\View\View
+     */
     public function edit(ScoringRule $scoringRule)
     {
-        return view('scoring-rules.edit', compact('scoringRule'));
+        // Policy will ensure the user can only edit their own tenant's rules
+        $this->authorize('update', $scoringRule);
+
+        return view('scoring_rules.edit', [
+            'rule' => $scoringRule,
+            'operators' => $this->operators
+        ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\ScoringRule  $scoringRule
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, ScoringRule $scoringRule)
     {
-        $request->validate([
-            'field' => 'required|string',
-            'value' => 'required|string',
+        $this->authorize('update', $scoringRule);
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'condition_field' => 'required|string|max:255',
+            'operator' => ['required', Rule::in(array_keys($this->operators))],
+            'condition_value' => 'nullable|string|max:255',
             'points' => 'required|integer',
         ]);
 
-        $this->scoringRuleService->updateRule($scoringRule, $request->all());
+        $scoringRule->update($validatedData);
 
         return redirect()->route('scoring-rules.index')
             ->with('success', 'Scoring rule updated successfully');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\ScoringRule  $scoringRule
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(ScoringRule $scoringRule)
     {
-        $this->scoringRuleService->deleteRule($scoringRule);
+        $this->authorize('delete', $scoringRule);
+
+        $scoringRule->delete();
 
         return redirect()->route('scoring-rules.index')
             ->with('success', 'Scoring rule deleted successfully');

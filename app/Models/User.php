@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'tenant_id',
+        'role', // Add role to fillable
     ];
 
     /**
@@ -50,5 +51,51 @@ class User extends Authenticatable
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * Check if the user has the 'admin' role.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user has the 'manager' role.
+     *
+     * @return bool
+     */
+    public function isManager(): bool
+    {
+        return $this->role === 'manager';
+    }
+
+    /**
+     * Check if the user has the 'sales_rep' role.
+     *
+     * @return bool
+     */
+    public function isSalesRep(): bool
+    {
+        return $this->role === 'sales_rep';
+    }
+
+    /**
+     * Get the activities for the user.
+     */
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+    /**
+     * Get the attachments for the user.
+     */
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
     }
 }

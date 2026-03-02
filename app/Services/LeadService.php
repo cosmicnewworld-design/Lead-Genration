@@ -18,9 +18,9 @@ class LeadService
         $this->scoringService = $scoringService;
     }
 
-    public function getAllLeads()
+    public function getAllLeads(string $searchTerm = null)
     {
-        return $this->leadRepository->getAll();
+        return $this->leadRepository->getAll($searchTerm);
     }
 
     public function getLeadCreationData(): array

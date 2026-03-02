@@ -2,22 +2,38 @@
 
 namespace Tests;
 
+use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
-     */
-    public function createApplication()
+    use CreatesApplication, RefreshDatabase;
+
+    protected static $ranMigrations = false;
+
+    protected function setUp(): void
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
+        parent::setUp();
 
-        $app->make(Kernel::class)->bootstrap();
+        if (!static::$ranMigrations) {
+            $this->artisan('migrate:fresh');
+            $this->artisan('tenants:migrate --seed');
+            static::$ranMigrations = true;
+        }
 
-        return $app;
+        $this->tenant = Tenant::create([
+            'id' => 'test',
+        ]);
+
+        $this->tenant->domains()->create([
+            'domain' => 'test.localhost',
+        ]);
+
+        tenancy()->initialize($this->tenant);
+
+        $this->user = User::factory()->create();
     }
 }

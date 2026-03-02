@@ -2,28 +2,34 @@
 
 namespace App\Repositories;
 
-use App\Models\Business;
 use App\Models\Lead;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Campaign;
+use Illuminate\Support\Facades\DB;
 
 class DashboardRepository
 {
     public function getDashboardData()
     {
-        $tenant = Auth::user()->tenant;
+        // Fetch core stats
+        $totalLeads = Lead::count();
+        $totalCampaigns = Campaign::count();
+        $recentLeads = Lead::with('campaign')->latest()->take(5)->get();
 
-        $totalBusinesses = $tenant->businesses()->count();
-        $totalLeads = $tenant->leads()->count();
-        $verifiedLeads = $tenant->leads()->where('status', 'verified')->count();
-        $outreachSent = $tenant->businesses()->where('outreach_sent', true)->count();
-        $recentLeads = $tenant->leads()->with('business')->latest()->take(5)->get();
+        // Prepare data for the pie chart
+        $leadsPerCampaign = Campaign::withCount('leads')
+            ->having('leads_count', '>', 0)
+            ->orderBy('leads_count', 'desc')
+            ->get();
+
+        $campaignLabels = $leadsPerCampaign->pluck('name')->all();
+        $campaignLeadData = $leadsPerCampaign->pluck('leads_count')->all();
 
         return [
-            'totalBusinesses' => $totalBusinesses,
             'totalLeads' => $totalLeads,
-            'verifiedLeads' => $verifiedLeads,
-            'outreachSent' => $outreachSent,
+            'totalCampaigns' => $totalCampaigns,
             'recentLeads' => $recentLeads,
+            'campaignLabels' => $campaignLabels,
+            'campaignLeadData' => $campaignLeadData,
         ];
     }
 }

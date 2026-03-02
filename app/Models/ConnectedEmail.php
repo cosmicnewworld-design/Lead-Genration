@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ConnectedEmail extends Model
 {
@@ -26,34 +25,16 @@ class ConnectedEmail extends Model
 
     protected $casts = [
         'token_expires_at' => 'datetime',
-        'last_reset_date' => 'date',
-        'is_active' => 'boolean',
-        'settings' => 'array',
+        'settings' => 'json',
     ];
 
-    public function tenant(): BelongsTo
+    public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
 
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function isTokenExpired(): bool
-    {
-        if (!$this->token_expires_at) {
-            return false;
-        }
-
-        return $this->token_expires_at->isPast();
-    }
-
-    public function resetDailyCount(): void
-    {
-        $this->daily_sent_count = 0;
-        $this->last_reset_date = now();
-        $this->save();
     }
 }

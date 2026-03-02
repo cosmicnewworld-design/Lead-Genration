@@ -9,24 +9,38 @@
     pkgs.php82Packages.composer
     pkgs.nodejs_20
     pkgs.postgresql
+    pkgs.php82Packages.pdo
+    pkgs.php82Packages.pdo_pgsql
   ];
   # Sets environment variables in the workspace
-  env = {};
+  env = {
+    PATH = pkgs.lib.mkBinPath [
+      pkgs.php82
+      pkgs.php82Packages.composer
+      pkgs.nodejs_20
+    ] + ":$PATH";
+  };
+  services = {
+    docker = {
+      enable = true;
+    };
+  };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
       # "vscodevim.vim"
-      "google.gemini-cli-vscode-ide-companion"
+      "google.gemini-cli-vscode-ide-companion",
+      "Codium.codium"
     ];
     workspace = {
-      # Runs when a workspace is first created with this `dev.nix` file
+      # Runs when a workspace is first created with this \`dev.nix\` file
       onCreate = {
         # Example: install JS dependencies from NPM
         # npm-install = "npm install";
         # Open editors for the following files by default, if they exist:
         default.openFiles = [ "README.md" "resources/views/welcome.blade.php" ];
       };
-      # To run something each time the workspace is (re)started, use the `onStart` hook
+      # To run something each time the workspace is (re)started, use the \`onStart\` hook
     };
     # Enable previews and customize configuration
     previews = {

@@ -12,6 +12,7 @@ class Plan extends Model
     protected $fillable = [
         'name',
         'slug',
+        'stripe_plan', // Add this line
         'stripe_plan_id',
         'stripe_price_id',
         'price',

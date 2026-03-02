@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Lead extends Model
 {
@@ -15,73 +13,41 @@ class Lead extends Model
         'name',
         'email',
         'phone',
-        'company',
-        'job_title',
-        'website',
-        'notes',
         'status',
-        'score',
-        'pipeline_stage_id',
-        'assigned_to_user_id',
-        'custom_fields',
-        'enrichment_data',
-        'last_contacted_at',
-        'source',
-        'lead_source_id',
-        'is_qualified',
         'tenant_id',
+        'source',
+        'score', // Make score fillable
     ];
 
-    protected $casts = [
-        'custom_fields' => 'array',
-        'enrichment_data' => 'array',
-        'last_contacted_at' => 'datetime',
-        'is_qualified' => 'boolean',
-        'score' => 'integer',
-    ];
-
-    public function tenant(): BelongsTo
+    /**
+     * Get the tenant that owns the lead.
+     */
+    public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
 
-    public function pipelineStage(): BelongsTo
+    /**
+     * Get the activities for the lead.
+     */
+    public function activities()
     {
-        return $this->belongsTo(PipelineStage::class);
+        return $this->hasMany(Activity::class);
     }
 
-    public function assignedTo(): BelongsTo
+    /**
+     * Get the attachments for the lead.
+     */
+    public function attachments()
     {
-        return $this->belongsTo(User::class, 'assigned_to_user_id');
+        return $this->hasMany(Attachment::class);
     }
 
-    public function tags(): BelongsToMany
+    /**
+     * Get the source of the lead.
+     */
+    public function source()
     {
-        return $this->belongsToMany(Tag::class);
-    }
-
-    public function campaigns(): BelongsToMany
-    {
-        return $this->belongsToMany(Campaign::class);
-    }
-
-    public function leadSource(): BelongsTo
-    {
-        return $this->belongsTo(LeadSource::class);
-    }
-
-    public function scopeQualified($query)
-    {
-        return $query->where('is_qualified', true);
-    }
-
-    public function scopeHighScore($query, $minScore = 50)
-    {
-        return $query->where('score', '>=', $minScore);
-    }
-
-    public function scopeByStatus($query, $status)
-    {
-        return $query->where('status', $status);
+        return $this->belongsTo(LeadSource::class, 'lead_source_id');
     }
 }

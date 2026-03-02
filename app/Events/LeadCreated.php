@@ -15,7 +15,7 @@ class LeadCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $lead;
+    public Lead $lead;
 
     /**
      * Create a new event instance.
